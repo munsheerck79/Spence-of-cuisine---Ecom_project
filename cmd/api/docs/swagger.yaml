@@ -1,0 +1,1747 @@
+definitions:
+  domain.Address:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      district:
+        type: string
+      id:
+        type: integer
+      land_mark:
+        type: string
+      muncipality:
+        type: string
+      phone_number:
+        type: string
+      pin_code:
+        type: string
+      state:
+        type: string
+      updated_at:
+        type: string
+      users_id:
+        type: integer
+    type: object
+  domain.Cart:
+    properties:
+      Quantity:
+        type: integer
+      Variation_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      product_id:
+        type: integer
+      updated_at:
+        type: string
+      users_id:
+        type: integer
+    type: object
+  domain.Category:
+    properties:
+      category_name:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  domain.Coupon:
+    properties:
+      code:
+        maxLength: 8
+        minLength: 4
+        type: string
+      description:
+        type: string
+      discount_max_amount:
+        type: number
+      discount_percent:
+        type: integer
+      id:
+        type: integer
+      min_order_value:
+        type: number
+      valid_days:
+        type: integer
+    required:
+    - code
+    - discount_max_amount
+    - discount_percent
+    - min_order_value
+    - valid_days
+    type: object
+  domain.OrderStatus:
+    properties:
+      id:
+        type: integer
+      status:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - status
+    type: object
+  domain.Users:
+    properties:
+      age:
+        type: integer
+      block_status:
+        type: boolean
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        maxLength: 40
+        minLength: 2
+        type: string
+      id:
+        type: integer
+      last_name:
+        maxLength: 40
+        minLength: 1
+        type: string
+      password:
+        type: string
+      phone:
+        maxLength: 10
+        minLength: 10
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - age
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone
+    - user_name
+    type: object
+  domain.Variation:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        description: VariationIndex uint      `json:"variation_index" gorm:"unique;not
+          null"`
+        type: string
+      updated_at:
+        type: string
+    type: object
+  handler.CheckoutResponse:
+    properties:
+      address:
+        $ref: '#/definitions/domain.Address'
+      cart:
+        $ref: '#/definitions/domain.Cart'
+    type: object
+  handler.ListCartResponse:
+    properties:
+      discountPrice:
+        type: number
+      list:
+        items:
+          $ref: '#/definitions/response.Cart'
+        type: array
+      totalPrice:
+        type: number
+    type: object
+  request.AddCatogory:
+    properties:
+      category_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - category_name
+    type: object
+  request.AddPrice:
+    properties:
+      discount_price:
+        type: number
+      price:
+        type: number
+      product_ID:
+        type: integer
+      variation_id:
+        type: integer
+    required:
+    - discount_price
+    - price
+    - product_ID
+    - variation_id
+    type: object
+  request.AddProduct:
+    properties:
+      Code:
+        type: integer
+      category_id:
+        type: integer
+      description:
+        maxLength: 400
+        minLength: 2
+        type: string
+      image:
+        type: string
+      product_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+      qty_in_stock:
+        type: integer
+    required:
+    - Code
+    - category_id
+    - description
+    - image
+    - product_name
+    - qty_in_stock
+    type: object
+  request.AddVarient:
+    properties:
+      name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  request.Address:
+    properties:
+      address:
+        maxLength: 40
+        minLength: 5
+        type: string
+      district:
+        maxLength: 20
+        minLength: 4
+        type: string
+      land_mark:
+        maxLength: 20
+        minLength: 4
+        type: string
+      muncipality:
+        maxLength: 20
+        minLength: 4
+        type: string
+      phone_number:
+        maxLength: 10
+        minLength: 10
+        type: string
+      pin_code:
+        maxLength: 10
+        minLength: 6
+        type: string
+      state:
+        maxLength: 20
+        minLength: 4
+        type: string
+    required:
+    - address
+    - district
+    - land_mark
+    - muncipality
+    - phone_number
+    - pin_code
+    - state
+    type: object
+  request.BlockUser:
+    properties:
+      user_id:
+        type: integer
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - user_id
+    - user_name
+    type: object
+  request.CancelOrder:
+    properties:
+      id:
+        type: integer
+      users_id:
+        type: integer
+    required:
+    - id
+    type: object
+  request.Cart:
+    properties:
+      Quantity:
+        type: integer
+      Variation_id:
+        type: integer
+      product_id:
+        type: integer
+    required:
+    - Variation_id
+    - product_id
+    type: object
+  request.EditAddress:
+    properties:
+      address:
+        type: string
+      district:
+        type: string
+      land_mark:
+        type: string
+      muncipality:
+        type: string
+      phone_number:
+        type: string
+      pin_code:
+        type: string
+      state:
+        type: string
+    type: object
+  request.EditCart:
+    properties:
+      Quantity:
+        type: integer
+      Variation_id:
+        type: integer
+      product_id:
+        type: integer
+    required:
+    - product_id
+    type: object
+  request.EditCoupon:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      discount_max_amount:
+        type: number
+      discount_percent:
+        type: integer
+      id:
+        type: integer
+      min_order_value:
+        type: number
+      valid_days:
+        type: integer
+    type: object
+  request.EditPrice:
+    properties:
+      discount_price:
+        type: number
+      price:
+        type: number
+      product_ID:
+        type: integer
+      variation_id:
+        type: integer
+    required:
+    - discount_price
+    - price
+    - product_ID
+    - variation_id
+    type: object
+  request.EditProduct:
+    properties:
+      Code:
+        type: integer
+      category_id:
+        type: integer
+      description:
+        type: string
+      image:
+        type: string
+      product_name:
+        type: string
+      qty_in_stock:
+        type: integer
+      stock_status:
+        type: boolean
+    required:
+    - Code
+    type: object
+  request.LoginAdminData:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
+  request.LoignUserData:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
+  request.OTPVerify:
+    properties:
+      otp:
+        maxLength: 8
+        minLength: 4
+        type: string
+      user_id:
+        type: integer
+    required:
+    - otp
+    - user_id
+    type: object
+  request.SignupUserData:
+    properties:
+      age:
+        type: integer
+      confirm_password:
+        type: string
+      email:
+        type: string
+      first_name:
+        maxLength: 50
+        minLength: 2
+        type: string
+      last_name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      password:
+        type: string
+      phone:
+        maxLength: 10
+        minLength: 10
+        type: string
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - age
+    - confirm_password
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone
+    - user_name
+    type: object
+  request.UpDateOrderStatus:
+    properties:
+      order_id:
+        type: integer
+      order_status_id:
+        type: integer
+      status:
+        type: string
+      users_id:
+        type: integer
+    required:
+    - order_id
+    - status
+    - users_id
+    type: object
+  request.UserDetails:
+    properties:
+      user_id:
+        type: integer
+      user_name:
+        maxLength: 15
+        minLength: 3
+        type: string
+    required:
+    - user_id
+    - user_name
+    type: object
+  response.AdminOrderList:
+    properties:
+      actual_price:
+        type: number
+      disc_price:
+        type: number
+      id:
+        type: integer
+      net_amount:
+        type: number
+      order_date:
+        type: string
+      order_status_id:
+        type: integer
+      payment_method:
+        type: string
+      users_id:
+        type: integer
+    type: object
+  response.Cart:
+    properties:
+      Quantity:
+        type: integer
+      Variation_name:
+        type: string
+      actual_price:
+        type: number
+      discount_price:
+        type: number
+      id:
+        type: integer
+      product_id:
+        type: integer
+      product_name:
+        type: string
+      qty_in_stock:
+        type: integer
+    type: object
+  response.Order:
+    properties:
+      Razor_pay_order_id:
+        type: string
+      actual_price:
+        type: number
+      disc_price:
+        type: number
+      id:
+        type: integer
+      net_amount:
+        type: number
+      order_date:
+        type: string
+      order_status_id:
+        type: integer
+      payment_id:
+        type: string
+      payment_method:
+        type: string
+      status:
+        type: string
+      users_id:
+        type: integer
+    type: object
+  response.Orders1:
+    properties:
+      actual_price:
+        type: number
+      coupon_code:
+        type: string
+      disc_price:
+        type: number
+      id:
+        type: integer
+      items:
+        description: Use jsonb type for JSON data
+        items:
+          $ref: '#/definitions/response.Cart'
+        type: array
+      net_amount:
+        type: number
+      order_date:
+        type: string
+      order_status_name:
+        type: string
+      payment_method:
+        type: string
+    type: object
+  response.Prices:
+    properties:
+      Variation_Name:
+        type: string
+      discount_price:
+        type: number
+      price:
+        type: number
+    type: object
+  response.ProductDetails:
+    properties:
+      Price_list:
+        items:
+          $ref: '#/definitions/response.Prices'
+        type: array
+      category_Name:
+        type: string
+      code:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      product_name:
+        type: string
+      qty_in_stock:
+        type: integer
+      stock_status:
+        type: boolean
+    type: object
+  response.ProductRes:
+    properties:
+      category_name:
+        type: string
+      code:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      product_name:
+        type: string
+      qty_in_stock:
+        type: integer
+    type: object
+  response.UserDetails:
+    properties:
+      Orders_list:
+        items:
+          $ref: '#/definitions/response.Orders1'
+        type: array
+      address:
+        type: string
+      age:
+        type: integer
+      block_status:
+        type: boolean
+      district:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      muncipality:
+        type: string
+      phone:
+        type: string
+      user_name:
+        type: string
+    type: object
+  response.WHistoty:
+    properties:
+      added_at:
+        type: string
+      amount:
+        type: number
+      razorpay_payment_id:
+        type: string
+    type: object
+  response.WalletRes:
+    properties:
+      balence:
+        type: number
+      historys:
+        items:
+          $ref: '#/definitions/response.WHistoty'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /admin//product/orderstatus:
+    get:
+      description: get order status list for admin
+      operationId: GetOrderStatus
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.OrderStatus'
+            type: array
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for get order status list
+      tags:
+      - Admin.OrderDash
+  /admin/home:
+    get:
+      operationId: AdminHome
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginAdminData'
+      responses:
+        "200":
+          description: Login successful,welcome to home
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for Admin home page
+      tags:
+      - Admin
+  /admin/login:
+    post:
+      operationId: AdminLogin
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginAdminData'
+      responses:
+        "200":
+          description: Login successful
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for Admin login
+      tags:
+      - Admin
+  /admin/logout:
+    get:
+      operationId: LogOutAdmin
+      responses:
+        "200":
+          description: Logot successful
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: failed to send OTP
+      security:
+      - ApiKeyAuth: []
+      summary: api for Admin logout
+      tags:
+      - Admin
+  /admin/order/:
+    get:
+      consumes:
+      - application/json
+      operationId: ListOrder
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ' get order list'
+          schema:
+            items:
+              $ref: '#/definitions/response.AdminOrderList'
+            type: array
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for get order list
+      tags:
+      - Admin.OrderDash
+  /admin/order/addcoupon:
+    post:
+      operationId: AddCoupon
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Coupon'
+      responses:
+        "200":
+          description: coupon added successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add coupon
+      tags:
+      - Admin.Coupon
+  /admin/order/editcoupon:
+    put:
+      consumes:
+      - application/json
+      description: edit coupon
+      operationId: EditCoupon
+      parameters:
+      - description: Input Field
+        in: body
+        name: inputs
+        required: true
+        schema:
+          $ref: '#/definitions/request.EditCoupon'
+      responses:
+        "200":
+          description: Successfully address added
+        "400":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for edit coupon by admin
+      tags:
+      - Admin.Coupon
+  /admin/order/updaterderstatus:
+    patch:
+      consumes:
+      - application/json
+      operationId: UpdateOrderStatus
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpDateOrderStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for update order status of a user/order by using id
+      tags:
+      - Admin.OrderDash
+  /admin/otp-verify:
+    post:
+      operationId: OtpVerify
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.OTPVerify'
+      responses:
+        "200":
+          description: Login successful
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: failed to send OTP
+      security:
+      - ApiKeyAuth: []
+      summary: api for Admin otp verification
+      tags:
+      - Admin
+  /admin/product/EditProduct:
+    put:
+      operationId: EditProduct
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.EditProduct'
+      responses:
+        "200":
+          description: edited successfully
+        "400":
+          description: Missing or invalid entry
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to edit product
+      tags:
+      - Admin.ProductDash
+  /admin/product/addcategory:
+    post:
+      operationId: AddCategory
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddCatogory'
+      responses:
+        "200":
+          description: category added successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add catogory
+      tags:
+      - Admin.ProductDash
+  /admin/product/addorderstatus:
+    post:
+      operationId: AddOrderStatus
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.OrderStatus'
+      responses:
+        "200":
+          description: status added successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add status
+      tags:
+      - Admin.OrderDash
+  /admin/product/addprice:
+    post:
+      operationId: AddPrice
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddPrice'
+      responses:
+        "200":
+          description: price added successfully
+        "400":
+          description: Missing or invalid entry
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add price
+      tags:
+      - Admin.ProductDash
+  /admin/product/addproduct:
+    post:
+      operationId: AddProduct
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddProduct'
+      responses:
+        "200":
+          description: product added successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add product
+      tags:
+      - Admin.ProductDash
+  /admin/product/addvariation:
+    post:
+      operationId: AddVarient
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddVarient'
+      responses:
+        "200":
+          description: varient added successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to add varient
+      tags:
+      - Admin.ProductDash
+  /admin/product/editprice:
+    put:
+      operationId: EditPrice
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.EditPrice'
+      responses:
+        "200":
+          description: edited successfully
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for admin to edit price
+      tags:
+      - Admin.ProductDash
+  /admin/product/variation:
+    get:
+      description: get variation list for admin and user
+      operationId: Getvariations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully grt variation
+          schema:
+            items:
+              $ref: '#/definitions/domain.Variation'
+            type: array
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for get variation list
+      tags:
+      - Admin.ProductDash
+  /admin/sales-report:
+    get:
+      operationId: SalesReport
+      responses:
+        "400":
+          description: Missing or Invalid inputs
+        "500":
+          description: Something went wrong! failed to generate sales report
+      summary: api for admin to download sales report as csv format
+      tags:
+      - Admin
+  /admin/users/:
+    get:
+      operationId: ListUsers
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/domain.Users'
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for getuserlist
+      tags:
+      - Admin.UserDash
+  /admin/users/blockuser:
+    patch:
+      operationId: BlockUser
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.BlockUser'
+      responses:
+        "200":
+          description: Successfully changed user block_status
+          schema:
+            $ref: '#/definitions/request.BlockUser'
+        "400":
+          description: invalid input
+      summary: api for admin to block or unblock user
+      tags:
+      - Admin.UserDash
+  /admin/users/userdetails:
+    get:
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserDetails'
+      responses:
+        "200":
+          description: Successfully get user details
+          schema:
+            $ref: '#/definitions/response.UserDetails'
+        "400":
+          description: Missing or invalid entry
+      security:
+      - ApiKeyAuth: []
+      summary: api for get user details for admin
+      tags:
+      - Admin.UserDash
+  /user/addaddress:
+    get:
+      operationId: GetAddress
+      responses:
+        "200":
+          description: get address sucsessfully
+          schema:
+            $ref: '#/definitions/domain.Address'
+        "400":
+          description: Missing or invalid entry
+      security:
+      - ApiKeyAuth: []
+      summary: API for user to get address
+      tags:
+      - User.Details
+    post:
+      description: Get a new address from the user to store in the database
+      operationId: AddAddress
+      parameters:
+      - description: Input Field
+        in: body
+        name: inputs
+        required: true
+        schema:
+          $ref: '#/definitions/request.Address'
+      responses:
+        "200":
+          description: Successfully address added
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: API for adding a new address for a user
+      tags:
+      - User.Details
+  /user/cart/addtocart:
+    post:
+      description: user can add a product to cart
+      operationId: AddToCart
+      parameters:
+      - description: Input Field
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.Cart'
+      responses:
+        "200":
+          description: 'Successfuly added product item to cart '
+        "406":
+          description: 'StatusNotAcceptable,invalid input!! '
+        "500":
+          description: Failed to add product item in cart
+      security:
+      - ApiKeyAuth: []
+      summary: api for add product to user cart
+      tags:
+      - User.Cart
+  /user/cart/deletefromcart/:ID:
+    delete:
+      consumes:
+      - application/json
+      description: delete cart items
+      operationId: DeleteFromCart
+      parameters:
+      - description: ID
+        in: query
+        name: ID
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successfully deleted from cart
+        "400":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for delete cart product
+      tags:
+      - User.Cart
+  /user/cart/editcart:
+    put:
+      consumes:
+      - application/json
+      description: edit cart items
+      operationId: EditCartProduct
+      parameters:
+      - description: Input Field
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.EditCart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: edited successfully
+        "400":
+          description: Something went wrong !
+        "406":
+          description: 'StatusNotAcceptable,invalid input!! '
+      security:
+      - ApiKeyAuth: []
+      summary: API for edit cart product
+      tags:
+      - User.Cart
+  /user/cart/list:
+    get:
+      description: get cart list pf autherised user
+      operationId: ListCart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ListCartResponse'
+        "400":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for get cart list
+      tags:
+      - User.Cart
+  /user/coupon:
+    get:
+      operationId: GetCoupon
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Coupon'
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for get coupons for admin and user
+      tags:
+      - Admin.Coupon
+      - User
+  /user/editaddress:
+    put:
+      operationId: EditAddress
+      parameters:
+      - description: Input Field
+        in: body
+        name: inputs
+        required: true
+        schema:
+          $ref: '#/definitions/request.EditAddress'
+      responses:
+        "200":
+          description: Successfully address added
+        "400":
+          description: Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for editing address for a user
+      tags:
+      - User.Details
+  /user/getwallet:
+    get:
+      description: Get wallet history of user
+      operationId: GetWallet
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WalletRes'
+        "400":
+          description: can't get product
+      security:
+      - ApiKeyAuth: []
+      summary: Get wallet history
+      tags:
+      - User.Payment
+  /user/login:
+    get:
+      description: after user login user will seen this page with user informations
+        using mid.ware
+      operationId: UserHome
+      responses:
+        "200":
+          description: Login successfully !
+      security:
+      - ApiKeyAuth: []
+      summary: api for user home page
+      tags:
+      - User
+    post:
+      operationId: UserLogin
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoignUserData'
+      responses:
+        "200":
+          description: Login successful
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for user login
+      tags:
+      - User
+  /user/logout:
+    get:
+      operationId: LogoutUser
+      responses:
+        "200":
+          description: Logout successful
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for logout
+      tags:
+      - User
+  /user/order/cancelorder:
+    delete:
+      operationId: CancelOrder
+      parameters:
+      - description: inputs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.CancelOrder'
+      responses:
+        "200":
+          description: cancel order successful
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for canceling an order
+      tags:
+      - Admin.OrderDash
+      - User.Order
+  /user/order/checkout:
+    post:
+      description: place order
+      operationId: OrderCartProducts
+      parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        type: string
+      - description: pay method
+        in: query
+        name: payMethod
+        type: string
+      responses:
+        "200":
+          description: html added
+          schema:
+            $ref: '#/definitions/response.Order'
+        "400":
+          description: somthing wrong!!
+        "406":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for order cart products
+      tags:
+      - User.Order
+  /user/order/confirm-details:
+    get:
+      operationId: BuyProduct
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CheckoutResponse'
+        "400":
+          description: Missing or invalid entry
+      security:
+      - ApiKeyAuth: []
+      summary: API for checking all details for buying cart products
+      tags:
+      - User.Order
+  /user/order/invoice/:orderID:
+    get:
+      description: Download the invoice as a PDF file.
+      parameters:
+      - description: Order ID
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      produces:
+      - application/pdf
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: faild
+        "500":
+          description: faild
+      summary: Download invoice
+      tags:
+      - User.Order
+  /user/order/orderdetails:
+    get:
+      description: order details get by id
+      parameters:
+      - description: Order ID
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Orders1'
+        "400":
+          description: faild
+        "500":
+          description: faild
+      summary: order details get by id
+      tags:
+      - User.Order
+  /user/order/orderhistory:
+    get:
+      operationId: OrderHistory
+      parameters:
+      - description: Page Number
+        in: query
+        name: page_number
+        type: integer
+      - description: Count Of Order
+        in: query
+        name: count
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Order'
+        "400":
+          description: Failed to list order history
+      security:
+      - ApiKeyAuth: []
+      summary: api for list orderitems
+      tags:
+      - User.Order
+  /user/order/payment/addmonytowallet:
+    get:
+      description: Make payment using razorpay page .
+      parameters:
+      - description: Amount
+        in: query
+        name: Amount
+        type: string
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: faild
+      summary: Make payment razorpay
+      tags:
+      - User.Payment
+  /user/order/payment/checkout/razorpay:
+    get:
+      operationId: RazorPayCheckout
+      parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        type: string
+      responses:
+        "200":
+          description: html added successfully
+        "400":
+          description: Missing or invalid entry
+        "404":
+          description: 'invalid '
+      security:
+      - ApiKeyAuth: []
+      summary: api for user pay section
+      tags:
+      - User.Payment
+  /user/order/payment/razorpay/process-order:
+    post:
+      description: Verify razorpay payment using razorpay credentials .
+      operationId: ProccessRazorpayOrder
+      responses:
+        "200":
+          description: success
+        "400":
+          description: faild
+        "406":
+          description: invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: api for user pay section
+      tags:
+      - User
+  /user/order/returnorder:
+    get:
+      operationId: ReturnOrder
+      parameters:
+      - description: orderID
+        in: query
+        name: ID
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: requst to return successfully
+        "400":
+          description: Missing or invalid entry/error
+      security:
+      - ApiKeyAuth: []
+      summary: api for return order
+      tags:
+      - User.Order
+  /user/otp-verify:
+    post:
+      operationId: UserOtpVerify
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.OTPVerify'
+      responses:
+        "200":
+          description: Login successful
+        "400":
+          description: Missing or invalid entry
+        "401":
+          description: failed to send OTP
+        "500":
+          description: detect error
+      security:
+      - ApiKeyAuth: []
+      summary: api for user otp verification
+      tags:
+      - User
+  /user/product/:
+    get:
+      operationId: ProductList
+      parameters:
+      - description: Page Number
+        in: query
+        name: page_number
+        type: integer
+      - description: Count Of Order
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductRes'
+        "204":
+          description: No products to show
+        "500":
+          description: Failed to get all products
+      security:
+      - ApiKeyAuth: []
+      summary: API for admin or user to list all products
+      tags:
+      - User.Product
+      - Admin.ProductDash
+  /user/product/category:
+    get:
+      description: get category list for admin and user
+      operationId: GetCategory
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Category'
+            type: array
+        "400":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for get category list
+      tags:
+      - Admin.ProductDash
+      - User.Product
+  /user/product/listproductbyid:
+    get:
+      description: GetProduct list for admin and user
+      operationId: GetProduct
+      parameters:
+      - description: productID
+        in: query
+        name: ID
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "400":
+          description: can't get product
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get a product by ID
+      tags:
+      - Admin.ProductDash
+      - User.Product
+  /user/product/listproductsbycatogory:
+    get:
+      description: GetProduct list for admin and user by using name
+      operationId: GetProductsByCategoryName
+      parameters:
+      - description: category
+        in: query
+        name: Name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "204":
+          description: didnt get catogory name
+        "400":
+          description: can't get product
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get a product by name
+      tags:
+      - Admin.ProductDash
+      - User.Product
+  /user/signup:
+    post:
+      operationId: UserSignUp
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.SignupUserData'
+      responses:
+        "200":
+          description: Account created successfuly
+        "400":
+          description: invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: api for register user
+      tags:
+      - User
+  /user/wishlist/addtowishlist:
+    post:
+      description: user can add a stock in product to wishlist
+      operationId: AddToWishList
+      parameters:
+      - description: ID
+        in: query
+        name: ID
+        type: string
+      responses:
+        "200":
+          description: 'Successfuly added product item to wish '
+        "400":
+          description: Failed to add product item in wish
+      security:
+      - ApiKeyAuth: []
+      summary: api for add product item to user wishlist
+      tags:
+      - User.Wishlist
+  /user/wishlist/deletefromwishlist/:WishlistID:
+    delete:
+      consumes:
+      - application/json
+      description: delete wishlist items
+      operationId: DeleteFromWishLIst
+      parameters:
+      - description: WishlistID
+        in: query
+        name: WishlistID
+        type: string
+      responses:
+        "200":
+          description: success
+        "400":
+          description: string "Invalid input
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for delete wishlist product
+      tags:
+      - User.Wishlist
+  /user/wishlist/show:
+    get:
+      operationId: ListWishList
+      responses:
+        "200":
+          description: get list
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "400":
+          description: Failed to list product item in wishlist
+      security:
+      - ApiKeyAuth: []
+      summary: api for list product items in the wishlist
+      tags:
+      - User.Wishlist
+swagger: "2.0"
