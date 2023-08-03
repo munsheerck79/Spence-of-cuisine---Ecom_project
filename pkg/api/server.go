@@ -161,9 +161,9 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				orderdashbord.PATCH("/updateorderstatus", orderHandler.UpDateOrderStatus)
 				orderUpdateDashbord := orderdashbord.Group("/updateorderstatus")
 				{
-				orderUpdateDashbord.PATCH("/shipped",orderHandler.OrderShiped)
-				orderUpdateDashbord.PATCH("/delivered",orderHandler.OrderDelivered)
-				orderUpdateDashbord.PATCH("/refund",orderHandler.ReturnRefund)
+					orderUpdateDashbord.PATCH("/shipped", orderHandler.OrderShiped)
+					orderUpdateDashbord.PATCH("/delivered", orderHandler.OrderDelivered)
+					orderUpdateDashbord.PATCH("/refund", orderHandler.ReturnRefund)
 				}
 			}
 
