@@ -24,8 +24,8 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 func (i *userDatabase) FindUser(ctx context.Context, user domain.Users) (domain.Users, error) {
 	// Check any of the user details matching with db user list
 	fmt.Println(user.FirstName)
-	query := `SELECT * FROM users WHERE id = ? OR email = ? OR phone = ? OR user_name = ?`
-	if err := i.DB.Raw(query, user.ID, user.Email, user.Phone, user.UserName).Scan(&user).Error; err != nil {
+	query := `SELECT * FROM users WHERE id = ? OR email = ? OR user_name = ?`
+	if err := i.DB.Raw(query, user.ID, user.Email, user.UserName).Scan(&user).Error; err != nil {
 		return user, errors.New("failed to get user")
 	}
 	fmt.Println("get user")

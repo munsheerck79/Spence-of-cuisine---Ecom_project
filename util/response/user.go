@@ -27,19 +27,6 @@ type Order struct {
 	PayPaymentId    string    `json:"payment_id"`
 }
 
-type VariationR struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-type ProductRes struct {
-	ID           uint   `json:"id"`
-	Code         uint   `json:"code"`
-	Name         string `json:"product_name"`
-	Description  string `json:"description"`
-	CategoryName string `json:"category_name"`
-	QtyInStock   int   `json:"qty_in_stock"`
-	Image        string `json:"image"`
-}
 type WalletRes struct {
 	Balence float32    `json:"balence"`
 	History []WHistoty `json:"historys" gorm:"type:jsonb"`

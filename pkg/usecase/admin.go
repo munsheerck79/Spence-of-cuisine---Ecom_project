@@ -57,9 +57,9 @@ func (u *AdminUsecase) OTPLogin(ctx context.Context, admin domain.Admin) (domain
 	return DBAdmin, nil
 }
 
-func (a *AdminUsecase) GetUserlist(ctx context.Context) (userList []domain.Users, err error) {
+func (a *AdminUsecase) GetUserlist(ctx context.Context,page request.ReqPagination) (userList []domain.Users, err error) {
 
-	GetUser, err := a.adminRepository.GetUserlist(ctx)
+	GetUser, err := a.adminRepository.GetUserlist(ctx,page)
 	if err != nil {
 		return GetUser, err
 	}
@@ -86,9 +86,9 @@ func (a *AdminUsecase) UserDetails(ctx context.Context, body request.UserDetails
 	return userDetails, nil
 }
 
-func (a *AdminUsecase) GetOrderlist(ctx context.Context) (orderList []response.AdminOrderList, err error) {
+func (a *AdminUsecase) GetOrderlist(ctx context.Context,page request.ReqPagination) (orderList []response.AdminOrderList, err error) {
 
-	GetOrder, err := a.adminRepository.GetOrderlist(ctx)
+	GetOrder, err := a.adminRepository.GetOrderlist(ctx,page)
 	if err != nil {
 		return GetOrder, err
 	}

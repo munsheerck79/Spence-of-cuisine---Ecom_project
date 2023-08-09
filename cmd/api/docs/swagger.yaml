@@ -747,6 +747,15 @@ paths:
       consumes:
       - application/json
       operationId: ListOrder
+      parameters:
+      - description: Page Number
+        in: query
+        name: page_number
+        type: integer
+      - description: Count Of Order
+        in: query
+        name: count
+        type: integer
       produces:
       - application/json
       responses:
@@ -834,6 +843,90 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: api for update order status of a user/order by using id
+      tags:
+      - Admin.OrderDash
+  /admin/order/updaterderstatus/delivered:
+    patch:
+      consumes:
+      - application/json
+      operationId: OrderDelivered
+      parameters:
+      - description: orderid
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      - description: userid
+        in: query
+        name: userID
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: order delivered status
+      tags:
+      - Admin.OrderDash
+  /admin/order/updaterderstatus/refund/:orderID/:userID:
+    patch:
+      consumes:
+      - application/json
+      operationId: ReturnRefund
+      parameters:
+      - description: orderid
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      - description: userid
+        in: query
+        name: userID
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: refund process of return request verified
+      tags:
+      - Admin.OrderDash
+  /admin/order/updaterderstatus/shipped:
+    patch:
+      consumes:
+      - application/json
+      operationId: OrderShipped
+      parameters:
+      - description: orderid
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      - description: userid
+        in: query
+        name: userID
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: order shipped status
       tags:
       - Admin.OrderDash
   /admin/otp-verify:
@@ -1042,6 +1135,15 @@ paths:
   /admin/users/:
     get:
       operationId: ListUsers
+      parameters:
+      - description: Page Number
+        in: query
+        name: page_number
+        type: integer
+      - description: Count Of Order
+        in: query
+        name: count
+        type: integer
       responses:
         "200":
           description: Login successful
@@ -1380,6 +1482,52 @@ paths:
       summary: API for order cart products
       tags:
       - User.Order
+  /user/order/checkout/cod:
+    post:
+      description: place order by cod method
+      operationId: OrderCartProductsByCOD
+      parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        type: string
+      responses:
+        "200":
+          description: html added
+          schema:
+            $ref: '#/definitions/response.Order'
+        "400":
+          description: somthing wrong!!
+        "406":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for order cart products using cod
+      tags:
+      - User.Order
+  /user/order/checkout/wallet:
+    post:
+      description: place order
+      operationId: OrderCartProductsByWallet
+      parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        type: string
+      responses:
+        "200":
+          description: html added
+          schema:
+            $ref: '#/definitions/response.Order'
+        "400":
+          description: somthing wrong!!
+        "406":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for order cart products by using vallet
+      tags:
+      - User.Order
   /user/order/confirm-details:
     get:
       operationId: BuyProduct
@@ -1525,7 +1673,7 @@ paths:
       parameters:
       - description: orderID
         in: query
-        name: ID
+        name: orderID
         type: integer
       produces:
       - application/json

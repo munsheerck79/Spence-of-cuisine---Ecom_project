@@ -58,25 +58,27 @@ func (u *UserUseCase) Login(ctx context.Context, user domain.Users) (domain.User
 		fmt.Println("error3333")
 
 		return user, err
-	} else if DBUser.ID == 0 {
+	}
+	if DBUser.ID == 0 {
 		fmt.Println("name", DBUser.FirstName)
 		return user, errors.New("user not exist")
 	}
 	// Check if the user blocked by admin
 	if DBUser.BlockStatus {
-		fmt.Println("status", DBUser.BlockStatus)
+		fmt.Println("status=======", DBUser.BlockStatus)
 		return user, errors.New("user blocked by admin")
 	}
-	fmt.Println("444", DBUser.Phone)
+	fmt.Println("phone= ", DBUser.Phone)
 	if _, err := auth.TwilioSendOTP("+91" + DBUser.Phone); err != nil {
 
 		return user, fmt.Errorf("failed to send otp %v", err)
 	}
 	// check password with hashed pass
 	if bcrypt.CompareHashAndPassword([]byte(DBUser.Password), []byte(user.Password)) != nil {
+		fmt.Println("password incorrect")
 		return user, errors.New("password incorrect")
 	}
-
+	fmt.Println("sucsess and return")
 	return DBUser, nil
 
 }

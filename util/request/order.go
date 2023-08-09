@@ -13,6 +13,12 @@ type UpDateOrderStatus struct {
 	OrderStatusID uint   `json:"order_status_id,omitempty"`
 	Status        string `json:"status" binding:"required"`
 }
+
+type CancelOrder struct {
+	UsersID uint `json:"users_id"`
+	ID      uint `json:"id" binding:"required"`
+}
+
 type RazorPayCheckoutWallet struct {
 	Amount float32 `json:"amount" binding:"required"`
 }

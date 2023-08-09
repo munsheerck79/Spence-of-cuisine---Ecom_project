@@ -12,11 +12,6 @@ type BlockUser struct {
 	UserID   uint   `json:"user_id" binding:"required,numeric"`
 }
 
-type CancelOrder struct {
-	UsersID uint `json:"users_id"`
-	ID      uint `json:"id" binding:"required"`
-}
-
 type UserDetails struct {
 	UserName string `json:"user_name"  binding:"required,min=3,max=15"`
 	UserID   uint   `json:"user_id" binding:"required,numeric"`

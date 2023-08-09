@@ -32,9 +32,14 @@ func (i *adminDatabase) FindAdmin(ctx context.Context, admin domain.Admin) (doma
 	return admin, nil
 }
 
-func (u *adminDatabase) GetUserlist(ctx context.Context) (userList []domain.Users, err error) {
-	query := `SELECT * FROM users`
-	if err := u.DB.Raw(query).Scan(&userList).Error; err != nil {
+func (u *adminDatabase) GetUserlist(ctx context.Context, page request.ReqPagination) (userList []domain.Users, err error) {
+
+	limit := page.Count
+	offset := (page.PageNumber - 1) * limit
+
+	query := `SELECT * FROM users
+	ORDER BY created_at DESC LIMIT $1 OFFSET $2`
+	if err := u.DB.Raw(query, limit, offset).Scan(&userList).Error; err != nil {
 		return userList, errors.New("failed to get user")
 	}
 	return userList, nil
@@ -82,11 +87,16 @@ func (a *adminDatabase) UserDetails(ctx context.Context, body request.UserDetail
 
 }
 
-func (u *adminDatabase) GetOrderlist(ctx context.Context) (orderList []response.AdminOrderList, err error) {
+func (u *adminDatabase) GetOrderlist(ctx context.Context, page request.ReqPagination) (orderList []response.AdminOrderList, err error) {
+
+	limit := page.Count
+	offset := (page.PageNumber - 1) * limit
 	query := `SELECT  order_statuses.status 
 	FROM orders
-	LEFT JOIN order_statuses ON orders.order_status_id = order_statuses.id`
-	if err := u.DB.Raw(query).Scan(&orderList).Error; err != nil {
+	LEFT JOIN order_statuses ON orders.order_status_id = order_statuses.id
+	ORDER BY orders.order_date DESC LIMIT $1 OFFSET $2`
+
+	if err := u.DB.Raw(query, limit, offset).Scan(&orderList).Error; err != nil {
 		return orderList, errors.New("failed to get order list")
 	}
 	return orderList, nil

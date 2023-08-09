@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Load configuration failed")
 	}
-	//ddddddddddddddddddddddd
+
 	fmt.Println("jhb", config)
 	server, err := wire.InitiateAPI(config)
 

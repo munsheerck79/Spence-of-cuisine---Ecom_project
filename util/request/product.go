@@ -13,7 +13,7 @@ type AddProduct struct {
 	Name        string `json:"product_name" binding:"required,min=3,max=15"`
 	Description string `json:"description" binding:"required,min=2,max=400"`
 	CategoryID  uint   `json:"category_id" binding:"required"`
-	QtyInStock  int   `json:"qty_in_stock" binding:"required"`
+	QtyInStock  int    `json:"qty_in_stock" binding:"required"`
 	Image       string `json:"image" binding:"required"`
 }
 
@@ -35,17 +35,17 @@ type EditProduct struct {
 	Name        string `json:"product_name,omitempty"`
 	Description string `json:"description,omitempty"`
 	CategoryID  uint   `json:"category_id,omitempty"`
-	QtyInStock  int   `json:"qty_in_stock,omitempty"`
+	QtyInStock  int    `json:"qty_in_stock,omitempty"`
 	StockStatus bool   `json:"stock_status" gorm:"default:true;type:boolean"`
 	Image       string `json:"image,omitempty"`
 }
 
 type EditCoupon struct {
-    ID                uint    `json:"id"`
-    Code              string  `json:"code,omitempty"`
-    MinOrderValue     float64 `json:"min_order_value,omitempty"`
-    DiscountPercent   int     `json:"discount_percent,omitempty"`
-    DiscountMaxAmount float64 `json:"discount_max_amount,omitempty"`
-    Description       string  `json:"description,omitempty"`
-    ValidTill         int64   `json:"valid_days,omitempty"`
+	ID                uint    `json:"id"`
+	Code              string  `json:"code,omitempty"`
+	MinOrderValue     float64 `json:"min_order_value,omitempty"`
+	DiscountPercent   int     `json:"discount_percent,omitempty"`
+	DiscountMaxAmount float64 `json:"discount_max_amount,omitempty"`
+	Description       string  `json:"description,omitempty"`
+	ValidTill         int64   `json:"valid_days,omitempty"`
 }

@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -151,13 +153,29 @@ func (u *AdminHandler) AdminOTPVerify(c *gin.Context) {
 // @security ApiKeyAuth
 // @id ListUsers
 // @tags Admin.UserDash
+// @Param page_number query int false "Page Number"
+// @Param count query int false "Count Of Order"
 // @Router /admin/users/ [get]
 // @Success 200 {object} domain.Users{} "Login successful"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (a *AdminHandler) ListUsers(c *gin.Context) {
 
-	userList, err := a.adminService.GetUserlist(c)
+	var page request.ReqPagination
+	co := c.Query("count")
+	pa := c.Query("page_number")
+	count, err0 := strconv.Atoi(co)
+	page_number, err1 := strconv.Atoi(pa)
+	err0 = errors.Join(err0, err1)
+	if err0 != nil {
+		response := "Missing or invalid inputs"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	page.PageNumber = uint(page_number)
+	page.Count = uint(count)
+
+	userList, err := a.adminService.GetUserlist(c,page)
 	if err != nil {
 		respone := "failed to get all users"
 		c.JSON(http.StatusInternalServerError, respone)
@@ -253,12 +271,28 @@ func (a *AdminHandler) UserDetails(c *gin.Context) {
 // @Produce json
 // @tags Admin.OrderDash
 // @Router /admin/order/ [get]
+// @Param page_number query int false "Page Number"
+// @Param count query int false "Count Of Order"
 // @Success 200 {object} []response.AdminOrderList{} " get order list"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (a *AdminHandler) ListOrder(c *gin.Context) {
 
-	orderList, err := a.adminService.GetOrderlist(c)
+var page request.ReqPagination
+co:= c.Query("count")
+pa:=c.Query("page_number")
+count, err0 := strconv.Atoi(co)
+page_number, err1 := strconv.Atoi(pa)
+err0 = errors.Join(err0, err1)
+if err0 != nil {
+	response :="Missing or invalid inputs"
+	c.JSON(http.StatusBadRequest, response)
+	return
+}
+page.PageNumber = uint(page_number)
+page.Count = uint(count)
+
+	orderList, err := a.adminService.GetOrderlist(c,page)
 	if err != nil {
 		respone := "failed to get all users"
 		c.JSON(http.StatusInternalServerError, respone)

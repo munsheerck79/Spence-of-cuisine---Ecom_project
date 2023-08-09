@@ -46,6 +46,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 
 	{
 
+
 		//productdashbord := apiuser.Group("/product")
 		apiuser.GET("/login", userHandler.UserHome)
 		apiuser.GET("/logout", userHandler.LogoutUser)
@@ -55,7 +56,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		apiuser.PUT("/editaddress", userHandler.EditAddress)
 		apiuser.GET("/getwallet", paymentHandler.GetWallet)
 
-		userproductdashbord := apiuser.Group("/product") ///user/product
+		userproductdashbord := apiuser.Group("/product") 
 		{
 			userproductdashbord.GET("/", productHandler.ProductList)
 			userproductdashbord.GET("/listproductbyid", productHandler.GetProduct)
@@ -85,10 +86,12 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		{
 			userorderdashbord.GET("/confirm-details", orderHandler.BuyProduct)
 			userorderdashbord.POST("/checkout", orderHandler.OrderCartProducts)
+			userorderdashbord.POST("/checkout/wallet", orderHandler.OrderCartProductsByWallet)
+			userorderdashbord.POST("/checkout/cod", orderHandler.OrderCartProductsByCOD)
 
 			userorderdashbord.DELETE("/cancelorder", adminHandler.CancelOrder)
 			userorderdashbord.GET("/orderhistory", userHandler.OrderHistory)
-			userorderdashbord.GET("/returnorder/:ID", orderHandler.ReturnOrder)
+			userorderdashbord.GET("/returnorder", orderHandler.ReturnOrder)
 			userorderdashbord.GET("/orderdetails", orderHandler.GetOrderDetails)
 			userorderdashbord.GET("/invoice/:orderID", orderHandler.DownloadInvoice)
 			paymentdashbord := userorderdashbord.Group("/payment")
@@ -164,6 +167,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 					orderUpdateDashbord.PATCH("/shipped", orderHandler.OrderShiped)
 					orderUpdateDashbord.PATCH("/delivered", orderHandler.OrderDelivered)
 					orderUpdateDashbord.PATCH("/refund", orderHandler.ReturnRefund)
+					orderUpdateDashbord.PATCH("/returnrequestaccept", orderHandler.RetreturnRequestAccept)
 				}
 			}
 

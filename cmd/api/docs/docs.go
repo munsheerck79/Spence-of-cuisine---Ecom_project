@@ -163,6 +163,20 @@ const docTemplate = `{
                 ],
                 "summary": "api for get order list",
                 "operationId": "ListOrder",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Count Of Order",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": " get order list",
@@ -282,6 +296,138 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/request.UpDateOrderStatus"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order status"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/updaterderstatus/delivered": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "order delivered status",
+                "operationId": "OrderDelivered",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "orderid",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userid",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order status"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/updaterderstatus/refund/:orderID/:userID": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "refund process of return request verified",
+                "operationId": "ReturnRefund",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "orderid",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userid",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order status"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/updaterderstatus/shipped": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "order shipped status",
+                "operationId": "OrderShipped",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "orderid",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userid",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -640,6 +786,20 @@ const docTemplate = `{
                 ],
                 "summary": "api for getuserlist",
                 "operationId": "ListUsers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Count Of Order",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Login successful",
@@ -1178,6 +1338,80 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/order/checkout/cod": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "place order by cod method",
+                "tags": [
+                    "User.Order"
+                ],
+                "summary": "API for order cart products using cod",
+                "operationId": "OrderCartProductsByCOD",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "coupon",
+                        "name": "coupon",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "html added",
+                        "schema": {
+                            "$ref": "#/definitions/response.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "somthing wrong!!"
+                    },
+                    "406": {
+                        "description": "string \"Invalid input"
+                    }
+                }
+            }
+        },
+        "/user/order/checkout/wallet": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "place order",
+                "tags": [
+                    "User.Order"
+                ],
+                "summary": "API for order cart products by using vallet",
+                "operationId": "OrderCartProductsByWallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "coupon",
+                        "name": "coupon",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "html added",
+                        "schema": {
+                            "$ref": "#/definitions/response.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "somthing wrong!!"
+                    },
+                    "406": {
+                        "description": "string \"Invalid input"
+                    }
+                }
+            }
+        },
         "/user/order/confirm-details": {
             "get": {
                 "security": [
@@ -1418,7 +1652,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "orderID",
-                        "name": "ID",
+                        "name": "orderID",
                         "in": "query"
                     }
                 ],

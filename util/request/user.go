@@ -66,6 +66,7 @@ type EditCart struct {
 	VariationID uint `json:"Variation_id" binding:"omitempty"`
 	Quantity    int  `json:"Quantity,omitempty"`
 }
+
 type ReqPagination struct {
 	Count      uint `json:"count"`
 	PageNumber uint `json:"page_number"`

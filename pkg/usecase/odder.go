@@ -345,18 +345,25 @@ func (p *OrderUsecase) EditCoupon(c context.Context, body request.EditCoupon) er
 func (o *OrderUsecase) ReturnOrder(c context.Context, userId uint, orderID uint) (response.Order, error) {
 
 	order, err := o.orderRepository.OrderDetails(c, userId, orderID)
-
 	if err != nil {
-		return order, err
+		return order, fmt.Errorf("err @ oder getting,order is not avalable")
 	}
 	if order.ID == 0 {
+
 		return order, fmt.Errorf("%v order is not avalable", orderID)
 	}
-	orderTime := order.OrderDate.Add(24 * 15).Unix()
-	if orderTime < time.Now().Unix() {
+
+	newDate := order.OrderDate.AddDate(0, 0, 15)
+	// Get today's date
+	today := time.Now().UTC()
+	// Check if the new date is before today
+	if newDate.Before(today) {
+		fmt.Println("return requst date is before today:", newDate.Format("2006-01-02"))
 		return order, fmt.Errorf("return facility is not avleble ,time out")
 	}
+
 	if order.OrderStatus != "order Delivered" {
+
 		return order, fmt.Errorf("return facility is not avleble ,order not delivered")
 	}
 
@@ -372,7 +379,6 @@ func (o *OrderUsecase) ReturnOrder(c context.Context, userId uint, orderID uint)
 		}
 	}
 	order1, err := o.orderRepository.OrderDetails(c, userId, orderID)
-
 	if err != nil {
 		return order1, err
 	}

@@ -91,7 +91,7 @@ func (u *UserHandler) UserLogin(c *gin.Context) {
 
 	dbUser, err := u.userService.Login(c, user)
 	if err != nil {
-		response := gin.H{"blocked by admin": user.UserName}
+		response := gin.H{"blocked by admin1": user.UserName}
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}

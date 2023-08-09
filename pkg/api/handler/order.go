@@ -44,6 +44,15 @@ func (p *OrderHandler) BuyProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if address.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "please enter the user address"})
+		return
+
+	}
+	if total == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "cart is empty"})
+		return
+	}
 
 	// success response
 	response := gin.H{
@@ -81,6 +90,79 @@ func (p *OrderHandler) OrderCartProducts(c *gin.Context) {
 
 	body.CouponCode = c.Query("coupon")
 	body.PaymentMethod = c.Query("payMethod")
+	// if err := c.ShouldBindJSON(&body); err != nil {
+	// 	response := "invalid input"
+	// 	c.JSON(http.StatusNotAcceptable, response)
+	// 	return
+
+	userId := auth.GetUserIdFromContext(c)
+	order, _, err := p.orderService.OrderCartProducts(c, userId, body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	response := gin.H{
+		"":     "order details",
+		"data": order,
+	}
+	c.JSON(http.StatusOK, response)
+
+}
+
+// OrderCartProductsByCOD godoc
+// @summary API for order cart products using cod
+// @description place order by cod method
+// @security ApiKeyAuth
+// @id OrderCartProductsByCOD
+// @tags User.Order
+// @Param coupon query string false "coupon"
+// @Router /user/order/checkout/cod [post]
+// @Success 200 {object} response.Order "html added"
+// @Failure 406 "string "Invalid input"
+// @Failure 400 "somthing wrong!!"
+func (p *OrderHandler) OrderCartProductsByCOD(c *gin.Context) {
+
+	var body request.Order
+
+	body.CouponCode = c.Query("coupon")
+	// if err := c.ShouldBindJSON(&body); err != nil {
+	// 	response := "invalid input"
+	// 	c.JSON(http.StatusNotAcceptable, response)
+	// 	return
+	body.PaymentMethod = "cod"
+	userId := auth.GetUserIdFromContext(c)
+	order, _, err := p.orderService.OrderCartProducts(c, userId, body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	response := gin.H{
+		"":     "order details",
+		"data": order,
+	}
+	c.JSON(http.StatusOK, response)
+
+}
+
+// OrderCartProductsByWallet godoc
+// @summary API for order cart products by using vallet
+// @description place order
+// @security ApiKeyAuth
+// @id OrderCartProductsByWallet
+// @tags User.Order
+// @Param coupon query string false "coupon"
+// @Router /user/order/checkout/wallet [post]
+// @Success 200 {object} response.Order "html added"
+// @Failure 406 "string "Invalid input"
+// @Failure 400 "somthing wrong!!"
+func (p *OrderHandler) OrderCartProductsByWallet(c *gin.Context) {
+
+	var body request.Order
+
+	body.CouponCode = c.Query("coupon")
+	body.PaymentMethod = "Wallet"
 	// if err := c.ShouldBindJSON(&body); err != nil {
 	// 	response := "invalid input"
 	// 	c.JSON(http.StatusNotAcceptable, response)
@@ -202,13 +284,14 @@ func (p *OrderHandler) AddCoupon(c *gin.Context) {
 //
 //	@Produce		json
 //
-// @Param ID query uint false "orderID"
-// @Router /user/order/returnorder/:ID [get]
+// @Param orderID query uint false "orderID"
+// @Router /user/order/returnorder [get]
 // @Success 200 "requst to return successfully"
 // @Failure 400 "Missing or invalid entry/error"
 func (p *OrderHandler) ReturnOrder(c *gin.Context) {
 
-	qID := c.Query("ID")
+	qID := c.Query("orderID")
+	fmt.Println("id=", qID)
 	ID, err := strconv.Atoi(qID)
 	if err != nil {
 		return
@@ -217,7 +300,10 @@ func (p *OrderHandler) ReturnOrder(c *gin.Context) {
 	order, err1 := p.orderService.ReturnOrder(c, userId, uint(ID))
 
 	if err1 != nil {
-		c.JSON(http.StatusBadRequest, err1)
+		Response := gin.H{
+			"Data": err1.Error(),
+		}
+		c.JSON(http.StatusBadRequest, Response)
 		return
 	}
 	// success response
@@ -339,8 +425,8 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 // @Accept json
 // @tags Admin.OrderDash
 //
-//	@Param	orderID	 query		int	true	"Order ID"
-//	@Param	userID	 query		int	true	"User ID"
+//	@Param	orderID	 query		int	true	"orderid"
+//	@Param	userID	 query		int	true	"userid"
 //
 // @Router /admin/order/updaterderstatus/refund/:orderID/:userID [patch]
 // @Success 200 "Updated order status"
@@ -348,14 +434,14 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 
-	str := c.Query("Order ID")
+	str := c.Query("orderid")
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("User ID")
+	u := c.Query("userid")
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
@@ -366,7 +452,7 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 
 	body.OrderID = uint(orderID)
 	body.UsersID = uint(userID)
-	body.Status = "returnrefund"
+	body.Status = "return refund"
 
 	err := p.orderService.UpDateOrderStatus(c, body)
 	if err != nil {
@@ -385,27 +471,30 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 // @summary order shipped status
 // @discription api for update order status of a user/order by using id
 //
-//	@Param		orderID	 query		int	true	"Order ID"
-//	@Param		userID	 query		int	true	"User ID"
+//	@Param orderID query int true "orderid"
+//	@Param userID query int	true "userid"
 //
 // @security ApiKeyAuth
 // @id OrderShipped
 // @Accept json
 // @tags Admin.OrderDash
-// @Router /admin/order/updaterderstatus/shipped/:orderID/:userID [patch]
+// @Router /admin/order/updaterderstatus/shipped [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) OrderShiped(c *gin.Context) {
 
-	str := c.Query("Order ID")
+	str := c.Query("orderid")
+	fmt.Println("orderid=", str)
+
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("User ID")
+	u := c.Query("userid")
+	fmt.Println("id", u)
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
@@ -416,7 +505,7 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 
 	body.OrderID = uint(orderID)
 	body.UsersID = uint(userID)
-	body.Status = "order shipped"
+	body.Status = "order Shipped"
 
 	err := p.orderService.UpDateOrderStatus(c, body)
 	if err != nil {
@@ -438,24 +527,24 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 // @id OrderDelivered
 // @Accept json
 //
-//	@Param	orderID	 query		int	true	"Order ID"
-//	@Param	userID	 query		int	true	"User ID"
+//	@Param	orderID	 query		int	true	"orderid"
+//	@Param	userID	 query		int	true	"userid"
 //
 // @tags Admin.OrderDash
-// @Router /admin/order/updaterderstatus/delivered/:orderID/:userID [patch]
+// @Router /admin/order/updaterderstatus/delivered [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 
-	str := c.Query("Order ID")
+	str := c.Query("orderid")
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("User ID")
+	u := c.Query("userid")
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
@@ -466,7 +555,7 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 
 	body.OrderID = uint(orderID)
 	body.UsersID = uint(userID)
-	body.Status = "order delivered"
+	body.Status = "order Delivered"
 
 	err := p.orderService.UpDateOrderStatus(c, body)
 	if err != nil {
@@ -477,6 +566,56 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 	// success response
 	response := gin.H{
 		"": "order status updated As order delivered",
+	}
+	c.JSON(http.StatusOK, response)
+}
+
+// RetreturnRequestAccept godoc
+// @summary refund process of return request verified
+// @Discription api for update order status of a user/order by using id
+// @security ApiKeyAuth
+// @id ReturnRefund
+// @Accept json
+// @tags Admin.OrderDash
+//
+//	@Param	orderID	 query		int	true	"orderid"
+//	@Param	userID	 query		int	true	"userid"
+//
+// @Router /admin/order/updaterderstatus/refund/:orderID/:userID [patch]
+// @Success 200 "Updated order status"
+// @Failure 400 "Missing or invalid entry"
+// @Failure 500 "Something went wrong !"
+func (p *OrderHandler) RetreturnRequestAccept(c *gin.Context) {
+
+	str := c.Query("orderid")
+	orderID, err1 := strconv.Atoi(str)
+	if err1 != nil {
+		response := "Invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	u := c.Query("userid")
+	userID, err2 := strconv.Atoi(u)
+	if err2 != nil {
+		response := "Invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	var body request.UpDateOrderStatus
+
+	body.OrderID = uint(orderID)
+	body.UsersID = uint(userID)
+	body.Status = "return request accepted"
+
+	err := p.orderService.UpDateOrderStatus(c, body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// success response
+	response := gin.H{
+		"": "order status updated as requst accepted",
 	}
 	c.JSON(http.StatusOK, response)
 }
