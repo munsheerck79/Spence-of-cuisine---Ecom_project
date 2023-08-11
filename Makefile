@@ -8,3 +8,11 @@ wire:
 
 swag: 
 	swag init -g pkg/api/server.go -o ./cmd/api/docs
+
+
+start :
+        ./build/bin/api
+ 
+build :
+        go build -o ./build/bin ./cmd/api
+
