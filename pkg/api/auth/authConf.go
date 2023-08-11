@@ -92,7 +92,7 @@ func TwilioSendOTP(phoneNumber string) (string, error) {
 		Username: ACCOUNTSID,
 	})
 	if client != nil {
-		fmt.Println("Twilio connected")
+		fmt.Println("Twilio connected...")
 	} else {
 		fmt.Println("Twilio connection error")
 	}
