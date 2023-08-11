@@ -686,13 +686,6 @@ paths:
   /admin/home:
     get:
       operationId: AdminHome
-      parameters:
-      - description: Input Fields
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request.LoginAdminData'
       responses:
         "200":
           description: Login successful,welcome to home

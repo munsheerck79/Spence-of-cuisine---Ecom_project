@@ -27,7 +27,6 @@ func ConnToDB(cfg config.Config) (*gorm.DB, error) {
 		return nil, errors.New("failed to connect database")
 	}
 	fmt.Println("Successfully Connected to database")
-
 	// Migrate models
 	err := DB.AutoMigrate(
 		// Users
@@ -48,7 +47,6 @@ func ConnToDB(cfg config.Config) (*gorm.DB, error) {
 		domain.OrdersItems{},
 		domain.OrdersTemp{},
 		domain.OrdersItemsTemp{},
-
 	)
 	if err != nil {
 		log.Fatal("Migration failed")

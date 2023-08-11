@@ -30,7 +30,6 @@ func NewAdminHandler(adminUsecase interfacess.AdminService) *AdminHandler {
 // @security ApiKeyAuth
 // @id AdminHome
 // @tags Admin
-// @Param input body request.LoginAdminData{} true "Input Fields"
 // @Router /admin/home [get]
 // @Success 200 "Login successful,welcome to home"
 // @Failure 400 "Missing or invalid entry"
@@ -175,7 +174,7 @@ func (a *AdminHandler) ListUsers(c *gin.Context) {
 	page.PageNumber = uint(page_number)
 	page.Count = uint(count)
 
-	userList, err := a.adminService.GetUserlist(c,page)
+	userList, err := a.adminService.GetUserlist(c, page)
 	if err != nil {
 		respone := "failed to get all users"
 		c.JSON(http.StatusInternalServerError, respone)
@@ -278,21 +277,21 @@ func (a *AdminHandler) UserDetails(c *gin.Context) {
 // @Failure 500 "Something went wrong !"
 func (a *AdminHandler) ListOrder(c *gin.Context) {
 
-var page request.ReqPagination
-co:= c.Query("count")
-pa:=c.Query("page_number")
-count, err0 := strconv.Atoi(co)
-page_number, err1 := strconv.Atoi(pa)
-err0 = errors.Join(err0, err1)
-if err0 != nil {
-	response :="Missing or invalid inputs"
-	c.JSON(http.StatusBadRequest, response)
-	return
-}
-page.PageNumber = uint(page_number)
-page.Count = uint(count)
+	var page request.ReqPagination
+	co := c.Query("count")
+	pa := c.Query("page_number")
+	count, err0 := strconv.Atoi(co)
+	page_number, err1 := strconv.Atoi(pa)
+	err0 = errors.Join(err0, err1)
+	if err0 != nil {
+		response := "Missing or invalid inputs"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	page.PageNumber = uint(page_number)
+	page.Count = uint(count)
 
-	orderList, err := a.adminService.GetOrderlist(c,page)
+	orderList, err := a.adminService.GetOrderlist(c, page)
 	if err != nil {
 		respone := "failed to get all users"
 		c.JSON(http.StatusInternalServerError, respone)

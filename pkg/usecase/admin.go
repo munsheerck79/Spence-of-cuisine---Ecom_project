@@ -34,14 +34,15 @@ func (u *AdminUsecase) LoginAdmin(ctx context.Context, admin domain.Admin) (doma
 	}
 	fmt.Println(DBAdmin.Phone)
 	if _, err := auth.TwilioSendOTP("+91" + DBAdmin.Phone); err != nil {
-
+		fmt.Println("error @send otp")
 		return admin, fmt.Errorf("failed to send otp %v", err)
 	}
 	// check password with hashed pass
 	if DBAdmin.Password != admin.Password {
+		fmt.Println("error @check password")
 		return admin, errors.New("password incorrect")
 	}
-
+	fmt.Println("return to handler")
 	return DBAdmin, nil
 
 }
@@ -57,9 +58,9 @@ func (u *AdminUsecase) OTPLogin(ctx context.Context, admin domain.Admin) (domain
 	return DBAdmin, nil
 }
 
-func (a *AdminUsecase) GetUserlist(ctx context.Context,page request.ReqPagination) (userList []domain.Users, err error) {
+func (a *AdminUsecase) GetUserlist(ctx context.Context, page request.ReqPagination) (userList []domain.Users, err error) {
 
-	GetUser, err := a.adminRepository.GetUserlist(ctx,page)
+	GetUser, err := a.adminRepository.GetUserlist(ctx, page)
 	if err != nil {
 		return GetUser, err
 	}
@@ -86,9 +87,9 @@ func (a *AdminUsecase) UserDetails(ctx context.Context, body request.UserDetails
 	return userDetails, nil
 }
 
-func (a *AdminUsecase) GetOrderlist(ctx context.Context,page request.ReqPagination) (orderList []response.AdminOrderList, err error) {
+func (a *AdminUsecase) GetOrderlist(ctx context.Context, page request.ReqPagination) (orderList []response.AdminOrderList, err error) {
 
-	GetOrder, err := a.adminRepository.GetOrderlist(ctx,page)
+	GetOrder, err := a.adminRepository.GetOrderlist(ctx, page)
 	if err != nil {
 		return GetOrder, err
 	}

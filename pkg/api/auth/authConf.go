@@ -81,12 +81,12 @@ func TwilioSendOTP(phoneNumber string) (string, error) {
 	SERVICESID = config.GetConfig().SERVICESID
 	ACCOUNTSID = config.GetConfig().ACCOUNTSID
 	AUTHTOKEN = config.GetConfig().AUTHTOKEN
-	// ACCOUNTSID = "AC2c8bf06da44f10b978038088c472580e"
-	// AUTHTOKEN = "9ac2047bdc66673ca4d6703303a33f0a"
-	// SERVICESID = "VA61d4b739330f391e167f7b0cad47d861"
-	fmt.Println("ser", SERVICESID)
-	fmt.Println("acc", ACCOUNTSID)
-	fmt.Println("auth", AUTHTOKEN)
+	// // ACCOUNTSID = "AC2c8bf06da44f10b978038088c472580e"
+	// // AUTHTOKEN = "9ac2047bdc66673ca4d6703303a33f0a"
+	// // SERVICESID = "VA61d4b739330f391e167f7b0cad47d861"
+	// fmt.Println("ser", SERVICESID)
+	// fmt.Println("acc", ACCOUNTSID)
+	// fmt.Println("auth", AUTHTOKEN)
 	client = twilio.NewRestClientWithParams(twilio.ClientParams{
 		Password: AUTHTOKEN,
 		Username: ACCOUNTSID,
@@ -107,7 +107,7 @@ func TwilioSendOTP(phoneNumber string) (string, error) {
 		fmt.Println("error at twilio")
 		return "", err
 	}
-
+	fmt.Println("return from auth")
 	return *resp.Sid, nil
 }
 

@@ -60,17 +60,6 @@ const docTemplate = `{
                 ],
                 "summary": "api for Admin home page",
                 "operationId": "AdminHome",
-                "parameters": [
-                    {
-                        "description": "Input Fields",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.LoginAdminData"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Login successful,welcome to home"
