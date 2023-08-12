@@ -169,6 +169,29 @@ definitions:
     required:
     - category_name
     type: object
+  request.AddCoupon:
+    properties:
+      code:
+        maxLength: 8
+        minLength: 4
+        type: string
+      description:
+        type: string
+      discount_max_amount:
+        type: number
+      discount_percent:
+        type: integer
+      min_order_value:
+        type: number
+      valid_days:
+        type: integer
+    required:
+    - code
+    - discount_max_amount
+    - discount_percent
+    - min_order_value
+    - valid_days
+    type: object
   request.AddPrice:
     properties:
       discount_price:
@@ -596,23 +619,6 @@ definitions:
       stock_status:
         type: boolean
     type: object
-  response.ProductRes:
-    properties:
-      category_name:
-        type: string
-      code:
-        type: integer
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      product_name:
-        type: string
-      qty_in_stock:
-        type: integer
-    type: object
   response.UserDetails:
     properties:
       Orders_list:
@@ -663,26 +669,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin//product/orderstatus:
-    get:
-      description: get order status list for admin
-      operationId: GetOrderStatus
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/domain.OrderStatus'
-            type: array
-        "500":
-          description: Something went wrong !
-      security:
-      - ApiKeyAuth: []
-      summary: API for get order status list
-      tags:
-      - Admin.OrderDash
   /admin/home:
     get:
       operationId: AdminHome
@@ -776,7 +762,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/domain.Coupon'
+          $ref: '#/definitions/request.AddCoupon'
       responses:
         "200":
           description: coupon added successfully
@@ -787,6 +773,23 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: api for admin to add coupon
+      tags:
+      - Admin.Coupon
+  /admin/order/coupon:
+    get:
+      operationId: GetCouponAdmin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Coupon'
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for get coupons for admin and user
       tags:
       - Admin.Coupon
   /admin/order/editcoupon:
@@ -812,33 +815,7 @@ paths:
       summary: API for edit coupon by admin
       tags:
       - Admin.Coupon
-  /admin/order/updaterderstatus:
-    patch:
-      consumes:
-      - application/json
-      operationId: UpdateOrderStatus
-      parameters:
-      - description: Input Fields
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpDateOrderStatus'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Updated order status
-        "400":
-          description: Missing or invalid entry
-        "500":
-          description: Something went wrong !
-      security:
-      - ApiKeyAuth: []
-      summary: api for update order status of a user/order by using id
-      tags:
-      - Admin.OrderDash
-  /admin/order/updaterderstatus/delivered:
+  /admin/order/updateorderstatus/delivered:
     patch:
       consumes:
       - application/json
@@ -865,8 +842,8 @@ paths:
       - ApiKeyAuth: []
       summary: order delivered status
       tags:
-      - Admin.OrderDash
-  /admin/order/updaterderstatus/refund/:orderID/:userID:
+      - Admin.OrderStatus
+  /admin/order/updateorderstatus/refund/:orderID/:userID:
     patch:
       consumes:
       - application/json
@@ -893,8 +870,8 @@ paths:
       - ApiKeyAuth: []
       summary: refund process of return request verified
       tags:
-      - Admin.OrderDash
-  /admin/order/updaterderstatus/shipped:
+      - Admin.Orderstatus
+  /admin/order/updateorderstatus/shipped:
     patch:
       consumes:
       - application/json
@@ -921,7 +898,33 @@ paths:
       - ApiKeyAuth: []
       summary: order shipped status
       tags:
-      - Admin.OrderDash
+      - Admin.OrderStatus
+  /admin/order/updaterderstatus:
+    patch:
+      consumes:
+      - application/json
+      operationId: UpdateOrderStatus
+      parameters:
+      - description: Input Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpDateOrderStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: api for update order status of a user/order by using id
+      tags:
+      - NotUse
   /admin/otp-verify:
     post:
       operationId: OtpVerify
@@ -944,6 +947,34 @@ paths:
       summary: api for Admin otp verification
       tags:
       - Admin
+  /admin/product/:
+    get:
+      operationId: ProductListAdmin
+      parameters:
+      - description: Page Number
+        in: query
+        name: page_number
+        type: integer
+      - description: Count Of Order
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "204":
+          description: No products to show
+        "500":
+          description: Failed to get all products
+      security:
+      - ApiKeyAuth: []
+      summary: API for admin or user to list all products
+      tags:
+      - Admin.ProductDash
   /admin/product/EditProduct:
     put:
       operationId: EditProduct
@@ -1072,6 +1103,26 @@ paths:
       summary: api for admin to add varient
       tags:
       - Admin.ProductDash
+  /admin/product/category:
+    get:
+      description: get category list for admin and user
+      operationId: GetCategoryAdmin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Category'
+            type: array
+        "400":
+          description: string "Invalid input
+      security:
+      - ApiKeyAuth: []
+      summary: API for get category list
+      tags:
+      - Admin.ProductDash
   /admin/product/editprice:
     put:
       operationId: EditPrice
@@ -1094,6 +1145,78 @@ paths:
       summary: api for admin to edit price
       tags:
       - Admin.ProductDash
+  /admin/product/getproductbyid:
+    get:
+      description: GetProduct list for admin and user
+      operationId: GetProductAdmin
+      parameters:
+      - description: productID
+        in: query
+        name: ID
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "400":
+          description: can't get product
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get a product by ID
+      tags:
+      - User.Product
+  /admin/product/listproductsbycatogory:
+    get:
+      description: GetProduct list for admin and user by using name
+      operationId: GetProductsByCategoryNameAdmin
+      parameters:
+      - description: category
+        in: query
+        name: Name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductDetails'
+        "204":
+          description: didnt get catogory name
+        "400":
+          description: can't get product
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get a product by name
+      tags:
+      - Admin.ProductDash
+  /admin/product/orderstatus:
+    get:
+      description: get order status list for admin
+      operationId: GetOrderStatus
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.OrderStatus'
+            type: array
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
+      summary: API for get order status list
+      tags:
+      - Admin.OrderDash
   /admin/product/variation:
     get:
       description: get variation list for admin and user
@@ -1474,7 +1597,7 @@ paths:
       - ApiKeyAuth: []
       summary: API for order cart products
       tags:
-      - User.Order
+      - NotUse
   /user/order/checkout/cod:
     post:
       description: place order by cod method
@@ -1722,7 +1845,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.ProductRes'
+            $ref: '#/definitions/response.ProductDetails'
         "204":
           description: No products to show
         "500":
@@ -1732,7 +1855,6 @@ paths:
       summary: API for admin or user to list all products
       tags:
       - User.Product
-      - Admin.ProductDash
   /user/product/category:
     get:
       description: get category list for admin and user
@@ -1752,7 +1874,6 @@ paths:
       - ApiKeyAuth: []
       summary: API for get category list
       tags:
-      - Admin.ProductDash
       - User.Product
   /user/product/listproductbyid:
     get:
@@ -1778,7 +1899,6 @@ paths:
       - ApiKeyAuth: []
       summary: Get a product by ID
       tags:
-      - Admin.ProductDash
       - User.Product
   /user/product/listproductsbycatogory:
     get:

@@ -247,7 +247,7 @@ func (p *OrderHandler) GetCoupon(c *gin.Context) {
 }
 // GetCouponAdmin godoc
 // @summary api for get coupons for admin and user
-// @id GetCoupon
+// @id GetCouponAdmin
 // @security ApiKeyAuth
 // @Produce json
 // @tags Admin.Coupon
@@ -451,7 +451,7 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 // @security ApiKeyAuth
 // @id ReturnRefund
 // @Accept json
-// @tags Admin.OrderDash
+// @tags Admin.OrderStatus
 //
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
@@ -505,7 +505,7 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 // @security ApiKeyAuth
 // @id OrderShipped
 // @Accept json
-// @tags Admin.OrderDash
+// @tags Admin.OrderStatus
 // @Router /admin/order/updateorderstatus/shipped [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
@@ -558,7 +558,7 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @tags Admin.OrderDash
+// @tags Admin.OrderStatus
 // @Router /admin/order/updateorderstatus/delivered [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
@@ -604,7 +604,7 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 // @security ApiKeyAuth
 // @id ReturnRefund
 // @Accept json
-// @tags Admin.OrderDash
+// @tags Admin.Orderstatus
 //
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"

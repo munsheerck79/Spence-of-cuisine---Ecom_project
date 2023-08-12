@@ -84,7 +84,7 @@ func (p *ProductHandler) ProductList(c *gin.Context) {
 // @Summary API for admin or user to list all products
 // @security ApiKeyAuth
 // @tags Admin.ProductDash
-// @id ProductList
+// @id ProductListAdmin
 // @Produce json
 // @Param page_number query int false "Page Number"
 // @Param count query int false "Count Of Order"
@@ -164,7 +164,7 @@ func (p *ProductHandler) GetCategory(c *gin.Context) {
 // @summary API for get category list
 // @description get category list for admin and user
 // @security ApiKeyAuth
-// @id GetCategory
+// @id GetCategoryAdmin
 // @tags Admin.ProductDash
 // @Produce json
 // @Router /admin/product/category [get]
@@ -540,7 +540,7 @@ func (p *ProductHandler) GetProduct(c *gin.Context) {
 // @Summary Get a product by ID
 // @Description GetProduct list for admin and user
 // @Security ApiKeyAuth
-// @ID GetProduct
+// @ID GetProductAdmin
 // @Tags User.Product
 // @Produce json
 // @Param ID query uint false "productID"
@@ -620,7 +620,7 @@ func (p *ProductHandler) GetProductsByCategoryName(c *gin.Context) {
 // @Summary Get a product by name
 // @Description GetProduct list for admin and user by using name
 // @Security ApiKeyAuth
-// @ID GetProductsByCategoryName
+// @ID GetProductsByCategoryNameAdmin
 // @Tags Admin.ProductDash
 // @Produce json
 // @Param Name query string false "category"

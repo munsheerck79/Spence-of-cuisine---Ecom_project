@@ -16,38 +16,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin//product/orderstatus": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "get order status list for admin",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin.OrderDash"
-                ],
-                "summary": "API for get order status list",
-                "operationId": "GetOrderStatus",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.OrderStatus"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Something went wrong !"
-                    }
-                }
-            }
-        },
         "/admin/home": {
             "get": {
                 "security": [
@@ -204,7 +172,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Coupon"
+                            "$ref": "#/definitions/request.AddCoupon"
                         }
                     }
                 ],
@@ -214,6 +182,34 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/coupon": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.Coupon"
+                ],
+                "summary": "api for get coupons for admin and user",
+                "operationId": "GetCouponAdmin",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Coupon"
+                        }
                     },
                     "500": {
                         "description": "Something went wrong !"
@@ -258,49 +254,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/order/updaterderstatus": {
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin.OrderDash"
-                ],
-                "summary": "api for update order status of a user/order by using id",
-                "operationId": "UpdateOrderStatus",
-                "parameters": [
-                    {
-                        "description": "Input Fields",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpDateOrderStatus"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Updated order status"
-                    },
-                    "400": {
-                        "description": "Missing or invalid entry"
-                    },
-                    "500": {
-                        "description": "Something went wrong !"
-                    }
-                }
-            }
-        },
-        "/admin/order/updaterderstatus/delivered": {
+        "/admin/order/updateorderstatus/delivered": {
             "patch": {
                 "security": [
                     {
@@ -311,7 +265,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.OrderDash"
+                    "Admin.OrderStatus"
                 ],
                 "summary": "order delivered status",
                 "operationId": "OrderDelivered",
@@ -344,7 +298,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/order/updaterderstatus/refund/:orderID/:userID": {
+        "/admin/order/updateorderstatus/refund/:orderID/:userID": {
             "patch": {
                 "security": [
                     {
@@ -355,7 +309,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.OrderDash"
+                    "Admin.Orderstatus"
                 ],
                 "summary": "refund process of return request verified",
                 "operationId": "ReturnRefund",
@@ -388,7 +342,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/order/updaterderstatus/shipped": {
+        "/admin/order/updateorderstatus/shipped": {
             "patch": {
                 "security": [
                     {
@@ -399,7 +353,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.OrderDash"
+                    "Admin.OrderStatus"
                 ],
                 "summary": "order shipped status",
                 "operationId": "OrderShipped",
@@ -417,6 +371,48 @@ const docTemplate = `{
                         "name": "userID",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order status"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/updaterderstatus": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NotUse"
+                ],
+                "summary": "api for update order status of a user/order by using id",
+                "operationId": "UpdateOrderStatus",
+                "parameters": [
+                    {
+                        "description": "Input Fields",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpDateOrderStatus"
+                        }
                     }
                 ],
                 "responses": {
@@ -464,6 +460,51 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "failed to send OTP"
+                    }
+                }
+            }
+        },
+        "/admin/product/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.ProductDash"
+                ],
+                "summary": "API for admin or user to list all products",
+                "operationId": "ProductListAdmin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Count Of Order",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ProductDetails"
+                        }
+                    },
+                    "204": {
+                        "description": "No products to show"
+                    },
+                    "500": {
+                        "description": "Failed to get all products"
                     }
                 }
             }
@@ -678,6 +719,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/product/category": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get category list for admin and user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.ProductDash"
+                ],
+                "summary": "API for get category list",
+                "operationId": "GetCategoryAdmin",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Category"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "string \"Invalid input"
+                    }
+                }
+            }
+        },
         "/admin/product/editprice": {
             "put": {
                 "security": [
@@ -707,6 +780,121 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/product/getproductbyid": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "GetProduct list for admin and user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User.Product"
+                ],
+                "summary": "Get a product by ID",
+                "operationId": "GetProductAdmin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "productID",
+                        "name": "ID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ProductDetails"
+                        }
+                    },
+                    "400": {
+                        "description": "can't get product",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/product/listproductsbycatogory": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "GetProduct list for admin and user by using name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.ProductDash"
+                ],
+                "summary": "Get a product by name",
+                "operationId": "GetProductsByCategoryNameAdmin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category",
+                        "name": "Name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ProductDetails"
+                        }
+                    },
+                    "204": {
+                        "description": "didnt get catogory name"
+                    },
+                    "400": {
+                        "description": "can't get product",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/product/orderstatus": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get order status list for admin",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "API for get order status list",
+                "operationId": "GetOrderStatus",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.OrderStatus"
+                            }
+                        }
                     },
                     "500": {
                         "description": "Something went wrong !"
@@ -1293,7 +1481,7 @@ const docTemplate = `{
                 ],
                 "description": "place order",
                 "tags": [
-                    "User.Order"
+                    "NotUse"
                 ],
                 "summary": "API for order cart products",
                 "operationId": "OrderCartProducts",
@@ -1705,8 +1893,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User.Product",
-                    "Admin.ProductDash"
+                    "User.Product"
                 ],
                 "summary": "API for admin or user to list all products",
                 "operationId": "ProductList",
@@ -1728,7 +1915,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.ProductRes"
+                            "$ref": "#/definitions/response.ProductDetails"
                         }
                     },
                     "204": {
@@ -1752,7 +1939,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.ProductDash",
                     "User.Product"
                 ],
                 "summary": "API for get category list",
@@ -1785,7 +1971,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.ProductDash",
                     "User.Product"
                 ],
                 "summary": "Get a product by ID",
@@ -2229,6 +2414,38 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 15,
                     "minLength": 3
+                }
+            }
+        },
+        "request.AddCoupon": {
+            "type": "object",
+            "required": [
+                "code",
+                "discount_max_amount",
+                "discount_percent",
+                "min_order_value",
+                "valid_days"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "maxLength": 8,
+                    "minLength": 4
+                },
+                "description": {
+                    "type": "string"
+                },
+                "discount_max_amount": {
+                    "type": "number"
+                },
+                "discount_percent": {
+                    "type": "integer"
+                },
+                "min_order_value": {
+                    "type": "number"
+                },
+                "valid_days": {
+                    "type": "integer"
                 }
             }
         },
@@ -2845,32 +3062,6 @@ const docTemplate = `{
                 },
                 "stock_status": {
                     "type": "boolean"
-                }
-            }
-        },
-        "response.ProductRes": {
-            "type": "object",
-            "properties": {
-                "category_name": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "product_name": {
-                    "type": "string"
-                },
-                "qty_in_stock": {
-                    "type": "integer"
                 }
             }
         },
