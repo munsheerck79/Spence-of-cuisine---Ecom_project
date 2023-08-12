@@ -397,6 +397,7 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 // @Failure 400 "Missing or Invalid inputs"
 func (a *AdminHandler) SalesReport(c *gin.Context) {
 	var body request.DateRange
+	fmt.Println("entered in sales func")
 	if err := c.ShouldBindJSON(&body); err != nil {
 		response := "Missing or invalid entry"
 		c.JSON(http.StatusBadRequest, response)
