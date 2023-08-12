@@ -29,6 +29,8 @@ func (i *adminDatabase) FindAdmin(ctx context.Context, admin domain.Admin) (doma
 	}
 
 	fmt.Println("get user")
+
+	fmt.Println("from DB", admin)
 	return admin, nil
 }
 
