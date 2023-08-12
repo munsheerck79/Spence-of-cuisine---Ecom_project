@@ -314,11 +314,51 @@ func (a *AdminHandler) ListOrder(c *gin.Context) {
 
 }
 
+
+// CancelOrderAdmin godoc
+// @summary API for canceling an order
+// @security ApiKeyAuth
+// @ID CancelOrderAdmin
+// @tags Admin.OrderDash
+// @Param input body request.CancelOrder{} true "inputs"
+// @Router /admin/order/cancelorder [delete]
+// @Success 200 "cancel order successful"
+// @Failure 400 "Missing or invalid entry"
+// @Failure 500 "Something went wrong !"
+func (a *AdminHandler) CancelOrderAdmin(c *gin.Context) {
+
+	var body request.CancelOrder
+	if err := c.ShouldBindJSON(&body); err != nil {
+		response := "Missing or invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	if body.UsersID == 0 {
+		body.UsersID = auth.GetUserIdFromContext(c)
+	}
+
+	msg, err := a.adminService.CancelOrder(c, body)
+
+	if err != nil {
+		respone := "failed cancel"
+		c.JSON(http.StatusInternalServerError, respone)
+		return
+	}
+	data := gin.H{
+		"Message": msg,
+	}
+	c.JSON(http.StatusOK, data)
+
+}
+
+
+
+
+
 // CancelOrder godoc
 // @summary API for canceling an order
 // @security ApiKeyAuth
 // @ID CancelOrder
-// @tags Admin.OrderDash
 // @tags User.Order
 // @Param input body request.CancelOrder{} true "inputs"
 // @Router /user/order/cancelorder [delete]
@@ -355,6 +395,7 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 // @summary api for admin to download sales report as csv format
 // @id SalesReport
 // @tags Admin
+// @Param input body request.DateRange{} true "Input Fields"
 // @Router /admin/sales-report [get]
 // @Success 500 "success"
 // @Failure 500 "Something went wrong! failed to generate sales report"
