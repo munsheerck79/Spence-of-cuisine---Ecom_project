@@ -391,7 +391,7 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 // @id SalesReport
 // @tags Admin
 // @Param input body request.DateRange{} true "Input Fields"
-// @Router /admin/sales-report [get]
+// @Router /admin/salesreport [get]
 // @Success 500 "success"
 // @Failure 500 "Something went wrong! failed to generate sales report"
 // @Failure 400 "Missing or Invalid inputs"
