@@ -97,7 +97,7 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		body.CouponId = coupon.ID
 	} else {
 		fmt.Println("nil coupon")
-		body.CouponId = 6
+		body.CouponId = 0
 	}
 
 	var NewOrderID uint
