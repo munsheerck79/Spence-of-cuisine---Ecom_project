@@ -245,6 +245,7 @@ func (p *OrderHandler) GetCoupon(c *gin.Context) {
 	c.JSON(http.StatusOK, Response)
 
 }
+
 // GetCouponAdmin godoc
 // @summary api for get coupons for admin and user
 // @id GetCouponAdmin
@@ -604,7 +605,7 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 // @security ApiKeyAuth
 // @id ReturnRefund
 // @Accept json
-// @tags Admin.Orderstatus
+// @tags Admin.OrderStatus
 //
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
