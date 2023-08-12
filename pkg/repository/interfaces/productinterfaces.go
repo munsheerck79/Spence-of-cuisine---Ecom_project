@@ -26,7 +26,7 @@ type ProductRepository interface {
 	SaveProductPrice(ctx context.Context, price domain.Price) error
 	UpdateProductPrice(ctx context.Context, price domain.Price) error
 
-	GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductRes, []response.VariationR, error)
+	GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error)
 
 	GetProductsByCategoryName(ctc context.Context, CID uint) ([]response.ProductDetails, error)
 

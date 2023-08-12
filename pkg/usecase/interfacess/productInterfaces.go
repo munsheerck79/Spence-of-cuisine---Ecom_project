@@ -15,7 +15,7 @@ type ProductService interface {
 	AddVarient(ctx context.Context, varient domain.Variation) error
 	AddProduct(ctx context.Context, product domain.Product) error
 	AddPrice(ctx context.Context, price domain.Price) error
-	GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductRes, []response.VariationR, error)
+	GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error)
 	GetProductsByCategoryName(ctc context.Context, CID uint) ([]response.ProductDetails, error)
 
 	EditProduct(ctx context.Context, product domain.Product) error

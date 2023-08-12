@@ -46,7 +46,6 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 
 	{
 
-
 		//productdashbord := apiuser.Group("/product")
 		apiuser.GET("/login", userHandler.UserHome)
 		apiuser.GET("/logout", userHandler.LogoutUser)
@@ -56,7 +55,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		apiuser.PUT("/editaddress", userHandler.EditAddress)
 		apiuser.GET("/getwallet", paymentHandler.GetWallet)
 
-		userproductdashbord := apiuser.Group("/product") 
+		userproductdashbord := apiuser.Group("/product")
 		{
 			userproductdashbord.GET("/", productHandler.ProductList)
 			userproductdashbord.GET("/listproductbyid", productHandler.GetProduct)
@@ -85,7 +84,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		userorderdashbord := apiuser.Group("/order")
 		{
 			userorderdashbord.GET("/confirm-details", orderHandler.BuyProduct)
-			userorderdashbord.POST("/checkout", orderHandler.OrderCartProducts)
+			//userorderdashbord.POST("/checkout", orderHandler.OrderCartProducts)
 			userorderdashbord.POST("/checkout/wallet", orderHandler.OrderCartProductsByWallet)
 			userorderdashbord.POST("/checkout/cod", orderHandler.OrderCartProductsByCOD)
 
@@ -135,9 +134,9 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 
 			productdashbord := apiadmin.Group("/product")
 			{
-				productdashbord.GET("/", productHandler.ProductList)
-				productdashbord.GET("/getproductbyid", productHandler.GetProduct)
-				productdashbord.GET("/listproductsbycatogory", productHandler.GetProductsByCategoryName)
+				productdashbord.GET("/", productHandler.ProductListAdmin)
+				productdashbord.GET("/getproductbyid", productHandler.GetProductAdmin)
+				productdashbord.GET("/listproductsbycatogory", productHandler.GetProductsByCategoryNameAdmin)
 				productdashbord.POST("/addproduct", productHandler.AddProduct)
 				productdashbord.PUT("/editproduct", productHandler.EditProduct)
 
@@ -145,7 +144,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				productdashbord.POST("/addprice", productHandler.AddPrice)
 				productdashbord.PUT("/editprice", productHandler.EditPrice)
 
-				productdashbord.GET("/category", productHandler.GetCategory)
+				productdashbord.GET("/category", productHandler.GetCategoryAdmin)
 				productdashbord.POST("/addcategory", productHandler.AddCategory)
 				productdashbord.GET("/variation", productHandler.Getvariations)
 				productdashbord.POST("/addvariation", productHandler.AddVarient)
@@ -158,7 +157,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			{
 				orderdashbord.GET("/", adminHandler.ListOrder)
 				orderdashbord.DELETE("/cancelorder", adminHandler.CancelOrder)
-				orderdashbord.GET("/coupons", orderHandler.GetCoupon)
+				orderdashbord.GET("/coupons", orderHandler.GetCouponAdmin)
 				orderdashbord.POST("/addcoupon", orderHandler.AddCoupon)
 				orderdashbord.PUT("/editcoupon", orderHandler.EditCoupon)
 				orderdashbord.PATCH("/updateorderstatus", orderHandler.UpDateOrderStatus)

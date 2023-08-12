@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"github.com/munsheerck79/Ecom_project.git/pkg/api/auth"
 	"github.com/munsheerck79/Ecom_project.git/pkg/domain"
 	"github.com/munsheerck79/Ecom_project.git/pkg/usecase/interfacess"
@@ -77,7 +78,7 @@ type CheckoutResponse struct {
 // @description place order
 // @security ApiKeyAuth
 // @id OrderCartProducts
-// @tags User.Order
+// @tags NotUse
 // @Param coupon query string false "coupon"
 // @Param payMethod query string false "pay method"
 // @Router /user/order/checkout [post]
@@ -190,7 +191,7 @@ func (p *OrderHandler) OrderCartProductsByWallet(c *gin.Context) {
 // @id UpdateOrderStatus
 // @Accept json
 // @Produce json
-// @tags Admin.OrderDash
+// @tags NotUse
 // @Router /admin/order/updaterderstatus [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
@@ -244,6 +245,31 @@ func (p *OrderHandler) GetCoupon(c *gin.Context) {
 	c.JSON(http.StatusOK, Response)
 
 }
+// GetCouponAdmin godoc
+// @summary api for get coupons for admin and user
+// @id GetCoupon
+// @security ApiKeyAuth
+// @Produce json
+// @tags Admin.Coupon
+// @Router /admin/order/coupon [get]
+// @Success 200 {object} domain.Coupon{}
+// @Failure 500 "Something went wrong !"
+func (p *OrderHandler) GetCouponAdmin(c *gin.Context) {
+
+	coupons, err := p.orderService.GetCoupon(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	Response := gin.H{
+		"Message": "List coupons successful",
+		"Data":    coupons,
+	}
+
+	c.JSON(http.StatusOK, Response)
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -252,21 +278,23 @@ func (p *OrderHandler) GetCoupon(c *gin.Context) {
 // @security ApiKeyAuth
 // @id AddCoupon
 // @tags Admin.Coupon
-// @Param input body  domain.Coupon{} true "inputs"
+// @Param input body  request.AddCoupon{} true "inputs"
 // @Router /admin/order/addcoupon [post]
 // @Success 200 "coupon added successfully"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) AddCoupon(c *gin.Context) {
 
-	var body domain.Coupon
+	var body request.AddCoupon
 	if err := c.ShouldBindJSON(&body); err != nil {
 		response := "invalid input"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+	var coupon domain.Coupon
+	copier.Copy(&coupon, body)
 
-	if err := p.orderService.AddCoupon(c, body); err != nil {
+	if err := p.orderService.AddCoupon(c, coupon); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -428,7 +456,7 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @Router /admin/order/updaterderstatus/refund/:orderID/:userID [patch]
+// @Router /admin/order/updateorderstatus/refund/:orderID/:userID [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
@@ -478,7 +506,7 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 // @id OrderShipped
 // @Accept json
 // @tags Admin.OrderDash
-// @Router /admin/order/updaterderstatus/shipped [patch]
+// @Router /admin/order/updateorderstatus/shipped [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
@@ -531,7 +559,7 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 //	@Param	userID	 query		int	true	"userid"
 //
 // @tags Admin.OrderDash
-// @Router /admin/order/updaterderstatus/delivered [patch]
+// @Router /admin/order/updateorderstatus/delivered [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
@@ -581,7 +609,7 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @Router /admin/order/updaterderstatus/refund/:orderID/:userID [patch]
+// @Router /admin/order/updateorderstatus/refund/:orderID/:userID [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"

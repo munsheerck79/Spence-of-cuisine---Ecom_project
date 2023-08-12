@@ -514,7 +514,7 @@ func (u *UserHandler) ListWishList(c *gin.Context) {
 
 	// success response
 	response := gin.H{
-		"":     "get address sucsessfully",
+		"":     "get wishlist sucsessfully",
 		"data": wishList,
 	}
 	c.JSON(http.StatusOK, response)

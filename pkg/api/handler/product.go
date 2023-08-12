@@ -33,32 +33,31 @@ func (p *ProductHandler) ListAll(c *gin.Context) {
 // @Summary API for admin or user to list all products
 // @security ApiKeyAuth
 // @tags User.Product
-// @tags Admin.ProductDash
 // @id ProductList
 // @Produce json
 // @Param page_number query int false "Page Number"
 // @Param count query int false "Count Of Order"
 // @Router /user/product/ [get]
-// @Success 200 {object} response.ProductRes{} response.VariationR{}
+// @Success 200 {object} response.ProductDetails{}
 // @Success 204 "No products to show"
 // @Failure 500 "Failed to get all products"
 func (p *ProductHandler) ProductList(c *gin.Context) {
 
 	var page request.ReqPagination
-	co:= c.Query("count")
-	pa:=c.Query("page_number")
+	co := c.Query("count")
+	pa := c.Query("page_number")
 	count, err0 := strconv.Atoi(co)
 	page_number, err1 := strconv.Atoi(pa)
 	err0 = errors.Join(err0, err1)
 	if err0 != nil {
-		response :="Missing or invalid inputs"
+		response := "Missing or invalid inputs"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 	page.PageNumber = uint(page_number)
 	page.Count = uint(count)
 
-	products, variations, err := p.productService.GetProductList(c,page)
+	products, err := p.productService.GetProductList(c, page)
 	fmt.Println(products)
 	fmt.Println(err)
 	if err != nil {
@@ -72,11 +71,60 @@ func (p *ProductHandler) ProductList(c *gin.Context) {
 		c.JSON(http.StatusNoContent, response)
 		return
 	}
-
 	data := gin.H{
-		"Message":    "List product successful",
-		"Data":       products,
-		"variations": variations,
+		"Message": "List product successful",
+		"Data":    products,
+	}
+
+	c.JSON(http.StatusOK, data)
+
+}
+
+// ProductListAdmin godoc
+// @Summary API for admin or user to list all products
+// @security ApiKeyAuth
+// @tags Admin.ProductDash
+// @id ProductList
+// @Produce json
+// @Param page_number query int false "Page Number"
+// @Param count query int false "Count Of Order"
+// @Router /admin/product/ [get]
+// @Success 200 {object} response.ProductDetails{}
+// @Success 204 "No products to show"
+// @Failure 500 "Failed to get all products"
+func (p *ProductHandler) ProductListAdmin(c *gin.Context) {
+
+	var page request.ReqPagination
+	co := c.Query("count")
+	pa := c.Query("page_number")
+	count, err0 := strconv.Atoi(co)
+	page_number, err1 := strconv.Atoi(pa)
+	err0 = errors.Join(err0, err1)
+	if err0 != nil {
+		response := "Missing or invalid inputs"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	page.PageNumber = uint(page_number)
+	page.Count = uint(count)
+
+	products, err := p.productService.GetProductList(c, page)
+	fmt.Println(products)
+	fmt.Println(err)
+	if err != nil {
+		respone := "failed to get all products"
+		c.JSON(http.StatusInternalServerError, respone)
+		return
+	}
+	// check there is no products
+	if len(products) == 0 {
+		response := "No products to show"
+		c.JSON(http.StatusNoContent, response)
+		return
+	}
+	data := gin.H{
+		"Message": "List product successful",
+		"Data":    products,
 	}
 
 	c.JSON(http.StatusOK, data)
@@ -90,13 +138,39 @@ func (p *ProductHandler) ProductList(c *gin.Context) {
 // @description get category list for admin and user
 // @security ApiKeyAuth
 // @id GetCategory
-// @tags Admin.ProductDash
 // @tags User.Product
 // @Produce json
 // @Router /user/product/category [get]
 // @Success 200 {object} []domain.Category
 // @Failure 400 "string "Invalid input"
 func (p *ProductHandler) GetCategory(c *gin.Context) {
+
+	categoryList, err := p.productService.GetCategory(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	Response := gin.H{
+		"Message": "List category successful",
+		"Data":    categoryList,
+	}
+
+	c.JSON(http.StatusOK, Response)
+
+}
+
+// GetCategoryAdmin godoc
+// @summary API for get category list
+// @description get category list for admin and user
+// @security ApiKeyAuth
+// @id GetCategory
+// @tags Admin.ProductDash
+// @Produce json
+// @Router /admin/product/category [get]
+// @Success 200 {object} []domain.Category
+// @Failure 400 "string "Invalid input"
+func (p *ProductHandler) GetCategoryAdmin(c *gin.Context) {
 
 	categoryList, err := p.productService.GetCategory(c)
 	if err != nil {
@@ -359,7 +433,7 @@ func (p *ProductHandler) EditPrice(c *gin.Context) {
 // @id GetOrderStatus
 // @tags Admin.OrderDash
 // @Produce json
-// @Router /admin//product/orderstatus [get]
+// @Router /admin/product/orderstatus [get]
 // @Success 200 {object} []domain.OrderStatus
 // @Failure 500 "Something went wrong !"
 func (p *ProductHandler) GetOrderStatus(c *gin.Context) {
@@ -433,12 +507,12 @@ func (p *ProductHandler) AddOrderStatus(c *gin.Context) {
 // c.JSON(http.StatusOK, data)
 
 // }
+
 // GetProduct godoc
 // @Summary Get a product by ID
 // @Description GetProduct list for admin and user
 // @Security ApiKeyAuth
 // @ID GetProduct
-// @Tags Admin.ProductDash
 // @Tags User.Product
 // @Produce json
 // @Param ID query uint false "productID"
@@ -446,6 +520,34 @@ func (p *ProductHandler) AddOrderStatus(c *gin.Context) {
 // @Success 200 {object} response.ProductDetails
 // @Failure 400 {string} string "can't get product"
 func (p *ProductHandler) GetProduct(c *gin.Context) {
+	ID, _ := strconv.Atoi(c.Query("ID"))
+	fmt.Println("Product ID:", ID)
+	product, err := p.productService.GetProduct(c, uint(ID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	Response := gin.H{
+		"Message": "List category successful",
+		"Data":    product,
+	}
+
+	c.JSON(http.StatusOK, Response)
+}
+
+// GetProductAdmin godoc
+// @Summary Get a product by ID
+// @Description GetProduct list for admin and user
+// @Security ApiKeyAuth
+// @ID GetProduct
+// @Tags User.Product
+// @Produce json
+// @Param ID query uint false "productID"
+// @Router /admin/product/getproductbyid [get]
+// @Success 200 {object} response.ProductDetails
+// @Failure 400 {string} string "can't get product"
+func (p *ProductHandler) GetProductAdmin(c *gin.Context) {
 	ID, _ := strconv.Atoi(c.Query("ID"))
 	fmt.Println("Product ID:", ID)
 	product, err := p.productService.GetProduct(c, uint(ID))
@@ -476,6 +578,57 @@ func (p *ProductHandler) GetProduct(c *gin.Context) {
 // @Success 204 "didnt get catogory name"
 // @Failure 400 {string} string "can't get product"
 func (p *ProductHandler) GetProductsByCategoryName(c *gin.Context) {
+	name := c.Query("Name")
+	fmt.Println(name)
+
+	categoryList, err := p.productService.GetCategory(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var CID uint
+	for i := 0; i < len(categoryList); i++ {
+		if categoryList[i].CategoryName == name {
+			CID = categoryList[i].ID
+		}
+	}
+	if CID == 0 {
+		Response := gin.H{
+			"Message": "catogory is not get",
+			"Data":    name,
+		}
+		c.JSON(http.StatusNoContent, Response)
+		return
+	}
+
+	products, err := p.productService.GetProductsByCategoryName(c, CID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// success response
+	Response := gin.H{
+		"Message": "List category successful",
+		"Data":    products,
+	}
+
+	c.JSON(http.StatusOK, Response)
+
+}
+
+// GetProductsByCategoryNameAdmin godoc
+// @Summary Get a product by name
+// @Description GetProduct list for admin and user by using name
+// @Security ApiKeyAuth
+// @ID GetProductsByCategoryName
+// @Tags Admin.ProductDash
+// @Produce json
+// @Param Name query string false "category"
+// @Router /admin/product/listproductsbycatogory [get]
+// @Success 200 {object} response.ProductDetails{}
+// @Success 204 "didnt get catogory name"
+// @Failure 400 {string} string "can't get product"
+func (p *ProductHandler) GetProductsByCategoryNameAdmin(c *gin.Context) {
 	name := c.Query("Name")
 	fmt.Println(name)
 

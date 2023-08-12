@@ -49,3 +49,12 @@ type EditCoupon struct {
 	Description       string  `json:"description,omitempty"`
 	ValidTill         int64   `json:"valid_days,omitempty"`
 }
+
+type AddCoupon struct {
+	Code              string  `json:"code," gorm:"unique;not null" binding:"required,min=4,max=8"`
+	MinOrderValue     float64 `json:"min_order_value" binding:"required"`
+	DiscountPercent   int     `json:"discount_percent" binding:"required"`
+	DiscountMaxAmount float64 `json:"discount_max_amount" binding:"required"`
+	Description       string  `json:"description" gorm:"not null;size:500"`
+	ValidTill         int64   `json:"valid_days" binding:"required"`
+}

@@ -52,7 +52,7 @@ func (p *PaymentUsecase) AddTempData(c context.Context, data response.Order) err
 	userId := data.UsersID
 	var b request.Order
 	b.PaymentMethod = "wallet"
-	b.CouponId = 6
+	b.CouponId = 0
 	orderIdx, err := p.orderRepository.OrderProductsTemp(c, userId, b, data.NetAmount, data.ActualPrice, data.DiscountPrice, data.OrderStatus, data.RazorPayOrderId)
 	if err != nil {
 		return err

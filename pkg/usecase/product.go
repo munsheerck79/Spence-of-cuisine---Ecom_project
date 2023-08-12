@@ -173,13 +173,13 @@ func (p *ProductUsecase) AddPrice(ctx context.Context, price domain.Price) error
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (p *ProductUsecase) GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductRes, []response.VariationR, error) {
+func (p *ProductUsecase) GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error) {
 
-	DBProduct, variations, err := p.productRepository.GetProductList(ctx,page)
+	DBProduct, err := p.productRepository.GetProductList(ctx,page)
 	if err != nil {
-		return DBProduct, variations, err
+		return DBProduct, err
 	}
-	return DBProduct, variations, nil
+	return DBProduct, nil
 
 }
 

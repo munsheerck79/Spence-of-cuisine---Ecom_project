@@ -46,6 +46,14 @@ func (p *OrderUsecase) BuyProduct(c context.Context, userId uint) (domain.Addres
 
 func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body request.Order) (response.Order, string, error) {
 
+	address, err5 := p.userRepository.FindAddress(c, userId)
+
+	if err5 != nil {
+		return response.Order{}, "", fmt.Errorf("address is not avalable or error at find address")
+	}
+	if address.ID == 0{
+		return response.Order{}, "", fmt.Errorf("address is not avalable please add address")
+	}
 	var Order response.Order
 	var Total float32
 	var DiscPrice float32

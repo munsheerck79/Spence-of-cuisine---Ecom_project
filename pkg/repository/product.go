@@ -20,26 +20,32 @@ type productDatabase struct {
 func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	return &productDatabase{DB: DB}
 }
-func (p *productDatabase) GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductRes, []response.VariationR, error) {
+func (p *productDatabase) GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error) {
+
 	limit := page.Count
 	offset := (page.PageNumber - 1) * limit
 
-	var Products []response.ProductRes
-	var Vari []response.VariationR
-	query := `SELECT products.id,products.code,products.name,products.description,products.qty_in_stock,products.image ,categories.category_name 
-	FROM products
-	INNER JOIN categories ON products.category_id=categories.id
+	var Products []response.ProductDetails
+
+	query := `SELECT products.id AS id,products.code,products.name AS product_name,products.description,products.qty_in_stock,products.image,category_Name
+	FROM products 
+	LEFT JOIN categories ON products.category_id =categories.id
 	ORDER BY products.created_at DESC LIMIT $1 OFFSET $2`
 	if err := p.DB.Raw(query, limit, offset).Scan(&Products).Error; err != nil {
-		return Products, Vari, errors.New("faild to show products1111")
-	}
-	query2 := `SELECT * FROM variations`
-	if err := p.DB.Raw(query2).Scan(&Vari).Error; err != nil {
-		return Products, Vari, errors.New("faild to show products")
+		return Products, errors.New("faild to show products")
 	}
 
-	return Products, Vari, nil
-
+	for k := 0; k < len(Products); k++ {
+		query2 := `SELECT variations.name,prices.actual_price,prices.discount_price 
+		FROM prices
+		INNER JOIN variations ON variations.Id = prices.variation_id
+		INNER JOIN products ON products.Id = prices.product_id
+		WHERE  prices.product_id =? `
+		if err := p.DB.Raw(query2, Products[k].ID).Scan(&Products[k].PriceList).Error; err != nil {
+			return Products, errors.New("faild to show products")
+		}
+	}
+	return Products, nil
 }
 
 func (p *productDatabase) GetCategory(ctx context.Context) ([]domain.Category, error) {
@@ -188,11 +194,23 @@ func (p *productDatabase) UpdateProductPrice(ctc context.Context, price domain.P
 }
 
 func (p *productDatabase) UpdateProductStock(ctx context.Context, id uint, qty int) error {
+
+	if qty < 0 {
+		qty = 0
+	}
+	if qty == 0 {
+		query := `UPDATE products SET stock_status = $1,updated_at = $2 WHERE id = $3`
+		createdAt := time.Now()
+		err := p.DB.Exec(query, false, createdAt, id).Error
+		if err != nil {
+			return fmt.Errorf("failed to save quantity %d", id)
+		}
+	}
 	query := `UPDATE products SET qty_in_stock = $1,updated_at = $2 WHERE id = $3`
 	createdAt := time.Now()
 	err := p.DB.Exec(query, qty, createdAt, id).Error
 	if err != nil {
-		return fmt.Errorf("failed to save price %d", id)
+		return fmt.Errorf("failed to save quantity %d", id)
 	}
 	return nil
 
@@ -203,9 +221,9 @@ func (p *productDatabase) GetOrderStatus(ctx context.Context) ([]domain.OrderSta
 	var status []domain.OrderStatus
 	query := `SELECT * FROM order_statuses`
 	if err := p.DB.Raw(query).Scan(&status).Error; err != nil {
-		return status, errors.New("failed to get variations list")
+		return status, errors.New("failed to get order status")
 	}
-	fmt.Println("get variationslist")
+	fmt.Println("get order status")
 	return status, nil
 }
 
