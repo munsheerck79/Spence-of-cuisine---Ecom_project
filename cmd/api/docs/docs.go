@@ -1014,7 +1014,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/sales-report": {
+        "/admin/salesreport": {
             "get": {
                 "tags": [
                     "Admin"

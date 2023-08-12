@@ -1294,7 +1294,7 @@ paths:
       summary: API for get variation list
       tags:
       - Admin.ProductDash
-  /admin/sales-report:
+  /admin/salesreport:
     get:
       operationId: SalesReport
       parameters:
