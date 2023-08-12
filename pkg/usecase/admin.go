@@ -26,7 +26,7 @@ func (u *AdminUsecase) LoginAdmin(ctx context.Context, admin domain.Admin) (doma
 	fmt.Println(admin.Email)
 
 	DBAdmin, err := u.adminRepository.FindAdmin(ctx, admin)
-	fmt.Println("dbadmin",DBAdmin)
+	fmt.Println("dbadmin",)
 
 	if err != nil {
 		fmt.Println("err@find admin",err)

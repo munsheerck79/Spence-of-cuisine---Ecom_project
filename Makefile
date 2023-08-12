@@ -10,6 +10,8 @@ swag:
 start:
 	./build/bin/api
 
-build:
-	go build -o ./build/bin/api ./cmd/api
+delete-build:
+	sudo rm -r build
 
+build:
+	sudo rm -r build && go build -o ./build/bin/api ./cmd/api
