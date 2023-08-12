@@ -224,7 +224,6 @@ func (p *OrderHandler) UpDateOrderStatus(c *gin.Context) {
 // @id GetCoupon
 // @security ApiKeyAuth
 // @Produce json
-// @tags Admin.Coupon
 // @tags User
 // @Router /user/coupon [get]
 // @Success 200 {object} domain.Coupon{}
@@ -603,14 +602,14 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 // @summary refund process of return request verified
 // @Discription api for update order status of a user/order by using id
 // @security ApiKeyAuth
-// @id ReturnRefund
+// @id RetreturnRequestAccept
 // @Accept json
 // @tags Admin.OrderStatus
 //
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @Router /admin/order/updateorderstatus/refund/:orderID/:userID [patch]
+// @Router /admin/order/updateorderstatus/returnrequestaccept/:orderID/:userID [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"

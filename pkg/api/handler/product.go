@@ -569,7 +569,6 @@ func (p *ProductHandler) GetProductAdmin(c *gin.Context) {
 // @Description GetProduct list for admin and user by using name
 // @Security ApiKeyAuth
 // @ID GetProductsByCategoryName
-// @Tags Admin.ProductDash
 // @Tags User.Product
 // @Produce json
 // @Param Name query string false "category"

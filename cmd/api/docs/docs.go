@@ -309,10 +309,54 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.Orderstatus"
+                    "Admin.OrderStatus"
+                ],
+                "summary": "refund process of return product",
+                "operationId": "ReturnRefund",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "orderid",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userid",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order status"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
+        "/admin/order/updateorderstatus/returnrequestaccept/:orderID/:userID": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderStatus"
                 ],
                 "summary": "refund process of return request verified",
-                "operationId": "ReturnRefund",
+                "operationId": "RetreturnRequestAccept",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1279,7 +1323,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.Coupon",
                     "User"
                 ],
                 "summary": "api for get coupons for admin and user",
@@ -2011,7 +2054,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin.ProductDash",
                     "User.Product"
                 ],
                 "summary": "Get a product by name",

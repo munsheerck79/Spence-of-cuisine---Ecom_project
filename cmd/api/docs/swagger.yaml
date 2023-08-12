@@ -868,9 +868,37 @@ paths:
           description: Something went wrong !
       security:
       - ApiKeyAuth: []
+      summary: refund process of return product
+      tags:
+      - Admin.OrderStatus
+  /admin/order/updateorderstatus/returnrequestaccept/:orderID/:userID:
+    patch:
+      consumes:
+      - application/json
+      operationId: RetreturnRequestAccept
+      parameters:
+      - description: orderid
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      - description: userid
+        in: query
+        name: userID
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Updated order status
+        "400":
+          description: Missing or invalid entry
+        "500":
+          description: Something went wrong !
+      security:
+      - ApiKeyAuth: []
       summary: refund process of return request verified
       tags:
-      - Admin.Orderstatus
+      - Admin.OrderStatus
   /admin/order/updateorderstatus/shipped:
     patch:
       consumes:
@@ -1461,7 +1489,6 @@ paths:
       - ApiKeyAuth: []
       summary: api for get coupons for admin and user
       tags:
-      - Admin.Coupon
       - User
   /user/editaddress:
     put:
@@ -1926,7 +1953,6 @@ paths:
       - ApiKeyAuth: []
       summary: Get a product by name
       tags:
-      - Admin.ProductDash
       - User.Product
   /user/signup:
     post:
