@@ -314,7 +314,6 @@ func (a *AdminHandler) ListOrder(c *gin.Context) {
 
 }
 
-
 // CancelOrderAdmin godoc
 // @summary API for canceling an order
 // @security ApiKeyAuth
@@ -350,10 +349,6 @@ func (a *AdminHandler) CancelOrderAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 
 }
-
-
-
-
 
 // CancelOrder godoc
 // @summary API for canceling an order

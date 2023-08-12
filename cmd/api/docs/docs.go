@@ -189,6 +189,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/order/cancelorder": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "API for canceling an order",
+                "operationId": "CancelOrderAdmin",
+                "parameters": [
+                    {
+                        "description": "inputs",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CancelOrder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "cancel order successful"
+                    },
+                    "400": {
+                        "description": "Missing or invalid entry"
+                    },
+                    "500": {
+                        "description": "Something went wrong !"
+                    }
+                }
+            }
+        },
         "/admin/order/coupon": {
             "get": {
                 "security": [
@@ -298,7 +334,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/order/updateorderstatus/refund/:orderID/:userID": {
+        "/admin/order/updateorderstatus/refund": {
             "patch": {
                 "security": [
                     {
@@ -342,7 +378,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/order/updateorderstatus/returnrequestaccept/:orderID/:userID": {
+        "/admin/order/updateorderstatus/returnrequestaccept": {
             "patch": {
                 "security": [
                     {
@@ -985,6 +1021,17 @@ const docTemplate = `{
                 ],
                 "summary": "api for admin to download sales report as csv format",
                 "operationId": "SalesReport",
+                "parameters": [
+                    {
+                        "description": "Input Fields",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.DateRange"
+                        }
+                    }
+                ],
                 "responses": {
                     "400": {
                         "description": "Missing or Invalid inputs"
@@ -1486,7 +1533,6 @@ const docTemplate = `{
                     }
                 ],
                 "tags": [
-                    "Admin.OrderDash",
                     "User.Order"
                 ],
                 "summary": "API for canceling an order",
@@ -2657,6 +2703,17 @@ const docTemplate = `{
                 },
                 "product_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.DateRange": {
+            "type": "object",
+            "properties": {
+                "end_date": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
                 }
             }
         },
