@@ -456,20 +456,20 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @Router /admin/order/updateorderstatus/refund/:orderID/:userID [patch]
+// @Router /admin/order/updateorderstatus/refund [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 
-	str := c.Query("orderid")
+	str := c.Query("orderID")
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("userid")
+	u := c.Query("userID")
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
@@ -512,7 +512,7 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) OrderShiped(c *gin.Context) {
 
-	str := c.Query("orderid")
+	str := c.Query("orderID")
 	fmt.Println("orderid=", str)
 
 	orderID, err1 := strconv.Atoi(str)
@@ -521,7 +521,7 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("userid")
+	u := c.Query("userID")
 	fmt.Println("id", u)
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
@@ -565,14 +565,14 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 
-	str := c.Query("orderid")
+	str := c.Query("orderID")
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("userid")
+	u := c.Query("userID")
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
@@ -609,20 +609,20 @@ func (p *OrderHandler) OrderDelivered(c *gin.Context) {
 //	@Param	orderID	 query		int	true	"orderid"
 //	@Param	userID	 query		int	true	"userid"
 //
-// @Router /admin/order/updateorderstatus/returnrequestaccept/:orderID/:userID [patch]
+// @Router /admin/order/updateorderstatus/returnrequestaccept [patch]
 // @Success 200 "Updated order status"
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (p *OrderHandler) RetreturnRequestAccept(c *gin.Context) {
 
-	str := c.Query("orderid")
+	str := c.Query("orderID")
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	u := c.Query("userid")
+	u := c.Query("userID")
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"
