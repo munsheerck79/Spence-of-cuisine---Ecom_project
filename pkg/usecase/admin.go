@@ -26,8 +26,10 @@ func (u *AdminUsecase) LoginAdmin(ctx context.Context, admin domain.Admin) (doma
 	fmt.Println(admin.Email)
 
 	DBAdmin, err := u.adminRepository.FindAdmin(ctx, admin)
+	fmt.Println("dbadmin",DBAdmin)
 
 	if err != nil {
+		fmt.Println("err@find admin",err)
 		return admin, err
 	} else if DBAdmin.ID == 0 {
 		return admin, errors.New("user not exist")
