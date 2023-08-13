@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -314,6 +315,46 @@ func (a *AdminHandler) ListOrder(c *gin.Context) {
 
 }
 
+//	  GetOrderDetailsAdmin godoc
+//		@Summary		order details get by id
+//		@Description	order details get by id
+//		@Tags			Admin.OrderDash
+//		@Produce		json
+//		@Param			orderID	 query		int	true	"Order ID"
+//		@Param			userID	 query		int	true	"User ID"
+//		@Success		200		{object}	 response.Orders1{}
+//		@Failure		400		"faild"
+//		@Failure		500		"faild"
+//		@Router		/admin/order/orderdetailsbyid [get]
+func (p *OrderHandler) GetOrderDetailsAdmin(c *gin.Context) {
+	orderID, err := strconv.Atoi(c.Query("orderID"))
+	if err != nil {
+		response := "Invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	userID, err := strconv.Atoi(c.Query("userID"))
+	if err != nil {
+		response := "Invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	orderDetails, err := p.orderService.GetOrderDetails(c, uint(userID), uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// success response
+	responce := gin.H{
+		"success": "get details successfuly",
+		"data":    orderDetails,
+	}
+	c.JSON(http.StatusOK, responce)
+
+}
+
 // CancelOrderAdmin godoc
 // @summary API for canceling an order
 // @security ApiKeyAuth
@@ -390,7 +431,8 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 // @summary api for admin to download sales report as csv format
 // @id SalesReport
 // @tags Admin
-// @Param input body request.DateRange{} true "Input Fields"
+// @Param end_date query string false "End Date(2006-01-02 15:04:05)"
+// @Param start_date query string false "Start Date(2006-01-02 15:04:05)"
 // @Router /admin/salesreport [get]
 // @Success 500 "success"
 // @Failure 500 "Something went wrong! failed to generate sales report"
@@ -398,11 +440,30 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 func (a *AdminHandler) SalesReport(c *gin.Context) {
 	var body request.DateRange
 	fmt.Println("entered in sales func")
-	if err := c.ShouldBindJSON(&body); err != nil {
-		response := "Missing or invalid entry"
-		c.JSON(http.StatusBadRequest, response)
+	// 	if err := c.ShouldBindJSON(&body); err != nil {
+	// 		response := "Missing or invalid entry"
+	// 		c.JSON(http.StatusBadRequest, response)
+	// 		return
+	// 	}
+	end := c.Query("end_date")
+	start := c.Query("start_date")
+	layout := "2006-01-02 15:04:05"
+	endTime, err := time.Parse(layout, end)
+	if err != nil {
+		fmt.Println("Error parsing time:", err)
 		return
 	}
+	startTime, err := time.Parse(layout, start)
+	if err != nil {
+		fmt.Println("Error parsing time:", err)
+		return
+	}
+	body.EndDate = endTime
+	body.StartDate = startTime
+
+	fmt.Println("et", body.EndDate)
+	fmt.Println("st", body.StartDate)
+
 	salesReport, err := a.adminService.SalesReport(c, body)
 	if err != nil {
 		response := "error in get sales report"

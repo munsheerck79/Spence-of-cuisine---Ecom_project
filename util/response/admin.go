@@ -3,14 +3,15 @@ package response
 import "time"
 
 type AdminOrderList struct {
-	ID            uint      `json:"id"`
-	UsersID       uint      `json:"users_id"`
-	ActualPrice   float32   `json:"actual_price"`
-	DiscountPrice float32   `json:"disc_price"`
-	NetAmount     float32   `json:"net_amount"`
-	OrderStatusID uint      `json:"order_status_id"`
-	PaymentMethod string    `json:"payment_method"`
-	OrderDate     time.Time `json:"order_date"`
+	ID              uint      `json:"id"`
+	UsersID         uint      `json:"users_id"`
+	UserName        string    `json:"user_name"`
+	ActualPrice     float32   `json:"actual_price"`
+	DiscountPrice   float32   `json:"disc_price"`
+	NetAmount       float32   `json:"net_amount"`
+	OrderStatusName string    `json:"order_status_name"`
+	PaymentMethod   string    `json:"payment_method"`
+	OrderDate       time.Time `json:"order_date"`
 }
 
 type UserDetails struct {
@@ -52,5 +53,3 @@ type SalesReport struct {
 	PaymentMethod string    `json:"payment_method"`
 	OrderDate     time.Time `json:"order_date"`
 }
-
-

@@ -290,6 +290,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/order/orderdetailsbyid": {
+            "get": {
+                "description": "order details get by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin.OrderDash"
+                ],
+                "summary": "order details get by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Orders1"
+                        }
+                    },
+                    "400": {
+                        "description": "faild"
+                    },
+                    "500": {
+                        "description": "faild"
+                    }
+                }
+            }
+        },
         "/admin/order/updateorderstatus/delivered": {
             "patch": {
                 "security": [
@@ -1023,13 +1065,16 @@ const docTemplate = `{
                 "operationId": "SalesReport",
                 "parameters": [
                     {
-                        "description": "Input Fields",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.DateRange"
-                        }
+                        "type": "string",
+                        "description": "End Date(2006-01-02 15:04:05)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date(2006-01-02 15:04:05)",
+                        "name": "start_date",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2706,17 +2751,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.DateRange": {
-            "type": "object",
-            "properties": {
-                "end_date": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                }
-            }
-        },
         "request.EditAddress": {
             "type": "object",
             "properties": {
@@ -3001,10 +3035,13 @@ const docTemplate = `{
                 "order_date": {
                     "type": "string"
                 },
-                "order_status_id": {
-                    "type": "integer"
+                "order_status_name": {
+                    "type": "string"
                 },
                 "payment_method": {
+                    "type": "string"
+                },
+                "user_name": {
                     "type": "string"
                 },
                 "users_id": {

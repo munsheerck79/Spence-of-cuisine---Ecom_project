@@ -93,9 +93,11 @@ func (u *adminDatabase) GetOrderlist(ctx context.Context, page request.ReqPagina
 
 	limit := page.Count
 	offset := (page.PageNumber - 1) * limit
-	query := `SELECT  order_statuses.status 
+	query := `SELECT  orders.id,orders.users_id,users.first_name AS user_name,orders.actual_price,orders.discount_price,orders.net_amount,
+	order_statuses.status AS order_status_name,orders.payment_method,orders.order_date
 	FROM orders
 	LEFT JOIN order_statuses ON orders.order_status_id = order_statuses.id
+	LEFT JOIN users ON orders.users_id = users.id
 	ORDER BY orders.order_date DESC LIMIT $1 OFFSET $2`
 
 	if err := u.DB.Raw(query, limit, offset).Scan(&orderList).Error; err != nil {

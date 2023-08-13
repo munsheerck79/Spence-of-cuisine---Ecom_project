@@ -156,6 +156,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			orderdashbord := apiadmin.Group("/order")
 			{
 				orderdashbord.GET("/", adminHandler.ListOrder)
+				orderdashbord.GET("/orderdetailsbyid", orderHandler.GetOrderDetailsAdmin)
 				orderdashbord.DELETE("/cancelorder", adminHandler.CancelOrderAdmin)
 				orderdashbord.GET("/coupons", orderHandler.GetCouponAdmin)
 				orderdashbord.POST("/addcoupon", orderHandler.AddCoupon)

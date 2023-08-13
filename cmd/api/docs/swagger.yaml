@@ -315,13 +315,6 @@ definitions:
     - Variation_id
     - product_id
     type: object
-  request.DateRange:
-    properties:
-      end_date:
-        type: string
-      start_date:
-        type: string
-    type: object
   request.EditAddress:
     properties:
       address:
@@ -519,9 +512,11 @@ definitions:
         type: number
       order_date:
         type: string
-      order_status_id:
-        type: integer
+      order_status_name:
+        type: string
       payment_method:
+        type: string
+      user_name:
         type: string
       users_id:
         type: integer
@@ -844,6 +839,34 @@ paths:
       summary: API for edit coupon by admin
       tags:
       - Admin.Coupon
+  /admin/order/orderdetailsbyid:
+    get:
+      description: order details get by id
+      parameters:
+      - description: Order ID
+        in: query
+        name: orderID
+        required: true
+        type: integer
+      - description: User ID
+        in: query
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Orders1'
+        "400":
+          description: faild
+        "500":
+          description: faild
+      summary: order details get by id
+      tags:
+      - Admin.OrderDash
   /admin/order/updateorderstatus/delivered:
     patch:
       consumes:
@@ -1298,12 +1321,14 @@ paths:
     get:
       operationId: SalesReport
       parameters:
-      - description: Input Fields
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request.DateRange'
+      - description: End Date(2006-01-02 15:04:05)
+        in: query
+        name: end_date
+        type: string
+      - description: Start Date(2006-01-02 15:04:05)
+        in: query
+        name: start_date
+        type: string
       responses:
         "400":
           description: Missing or Invalid inputs

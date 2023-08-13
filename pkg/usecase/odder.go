@@ -51,7 +51,7 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 	if err5 != nil {
 		return response.Order{}, "", fmt.Errorf("address is not avalable or error at find address")
 	}
-	if address.ID == 0{
+	if address.ID == 0 {
 		return response.Order{}, "", fmt.Errorf("address is not avalable please add address")
 	}
 	var Order response.Order
@@ -547,6 +547,7 @@ func (p *OrderUsecase) GetOrderDetails(c context.Context, userId uint, orderID u
 	if err := copier.Copy(&orderDetails.Items, productList); err != nil {
 		fmt.Println("Copy failed")
 	}
+	orderDetails.OrderStatusName = orderData.OrderStatus
 
 	return orderDetails, nil
 }
