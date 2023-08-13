@@ -37,13 +37,11 @@ func (u *UserUseCase) SignUp(ctx context.Context, user domain.Users) error {
 			return err
 		}
 		user.Password = string(hashedPass)
-
 		// Save user if not exist
 		err = u.userRepository.SaveUser(ctx, user)
 		if err != nil {
 			return err
 		}
-
 	} else {
 		return fmt.Errorf("%v user already exists", DBUser.UserName)
 	}
@@ -55,33 +53,27 @@ func (u *UserUseCase) Login(ctx context.Context, user domain.Users) (domain.User
 	// Find user in db
 	DBUser, err := u.userRepository.FindUser(ctx, user)
 	if err != nil {
-		fmt.Println("error3333")
-
 		return user, err
 	}
 	if DBUser.ID == 0 {
-		fmt.Println("name", DBUser.FirstName)
 		return user, errors.New("user not exist")
 	}
 	// Check if the user blocked by admin
 	if DBUser.BlockStatus {
-		fmt.Println("status=======", DBUser.BlockStatus)
 		return user, errors.New("user blocked by admin")
-	}
-	fmt.Println("phone= ", DBUser.Phone)
-	if _, err := auth.TwilioSendOTP("+91" + DBUser.Phone); err != nil {
-
-		return user, fmt.Errorf("failed to send otp %v", err)
 	}
 	// check password with hashed pass
 	if bcrypt.CompareHashAndPassword([]byte(DBUser.Password), []byte(user.Password)) != nil {
 		fmt.Println("password incorrect")
 		return user, errors.New("password incorrect")
 	}
-	fmt.Println("sucsess and return")
-	return DBUser, nil
+	if _, err := auth.TwilioSendOTP("+91" + DBUser.Phone); err != nil {
 
+		return user, fmt.Errorf("failed to send otp %v", err)
+	}
+	return DBUser, nil
 }
+
 func (u *UserUseCase) OTPLogin(ctx context.Context, user domain.Users) (domain.Users, error) {
 	// Find user in db
 	DBUser, err := u.userRepository.FindUser(ctx, user)
@@ -112,11 +104,9 @@ func (u *UserUseCase) ListCart(ctx context.Context, userId uint) ([]response.Car
 	}
 
 	if err != nil {
-
 		return cartList, TotalPrice, TotalDiscPrice, err
 	}
 	return cartList, TotalPrice, TotalDiscPrice, nil
-
 }
 
 func (u *UserUseCase) AddAddress(ctx context.Context, address domain.Address) error {
@@ -130,7 +120,6 @@ func (u *UserUseCase) AddAddress(ctx context.Context, address domain.Address) er
 		if err != nil {
 			return err
 		}
-
 	} else {
 		return fmt.Errorf("%v user already exists", DBAddress.UsersID)
 	}
@@ -145,33 +134,25 @@ func (u *UserUseCase) EditAddress(ctx context.Context, address domain.Address) e
 	if DBAddress.ID == 0 {
 		return fmt.Errorf("%v user not exists", DBAddress.UsersID)
 	} else {
-
 		if address.Address == "" {
 			address.Address = DBAddress.Address
-			fmt.Println("1")
 		}
 		if address.District == "" {
 			address.District = DBAddress.District
-			fmt.Println("2")
 		}
 		if address.LandMark == "" {
-			fmt.Println("3")
 			address.LandMark = DBAddress.LandMark
 		}
 		if address.State == "" {
-			fmt.Println("4")
 			address.State = DBAddress.State
 		}
 		if address.Muncipality == "" {
-			fmt.Println("5")
 			address.Muncipality = DBAddress.Muncipality
 		}
 		if address.PhoneNumber == "" {
-			fmt.Println("6")
 			address.PhoneNumber = DBAddress.PhoneNumber
 		}
 		if address.PinCode == "" {
-			fmt.Println("7")
 			address.PinCode = DBAddress.PinCode
 		}
 		// Save user if not exist
@@ -210,9 +191,7 @@ func (u *UserUseCase) AddToWishList(ctx context.Context, item domain.WishList) e
 	return nil
 }
 func (u *UserUseCase) DeleteFromWishLIst(c context.Context, Id uint, userId uint) error {
-	fmt.Println("enter usecase")
 	err := u.userRepository.DeleteFromWishLIst(c, Id, userId)
-
 	if err != nil {
 		return err
 	}
@@ -225,33 +204,16 @@ func (u *UserUseCase) ListWishList(ctx context.Context, userId uint) ([]response
 	if err != nil {
 		return wishList, err
 	}
-
 	return wishList, nil
-
 }
 
 func (u *UserUseCase) OrderHistory(ctx context.Context, userId uint, page request.ReqPagination) ([]response.Order, error) {
-
 	orderHistory, err := u.userRepository.OrderHistory(ctx, userId, page)
 	if err != nil {
 		return orderHistory, err
 	}
-
 	return orderHistory, nil
-
 }
-
-// func (u *UserUseCase) GetWallet(ctx context.Context, userId uint) (domain.Wallet, error) {
-
-// 	wallet, err := u.userRepository.GetWallet(ctx, userId)
-// 	if err != nil {
-// 		return wallet, err
-// 	}
-
-// 	return wallet, nil
-
-// }
-
 func (u *UserUseCase) EditCartProduct(ctx context.Context, item domain.Cart) error {
 	err := u.userRepository.EditCartProduct(ctx, item)
 	if err != nil {

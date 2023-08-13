@@ -55,7 +55,6 @@ func (p *productDatabase) GetCategory(ctx context.Context) ([]domain.Category, e
 	if err := p.DB.Raw(query).Scan(&category).Error; err != nil {
 		return category, errors.New("failed to get catogory list")
 	}
-	fmt.Println("get catogorylist")
 	return category, nil
 }
 
@@ -66,18 +65,14 @@ func (p *productDatabase) Getvariations(ctx context.Context) ([]domain.Variation
 	if err := p.DB.Raw(query).Scan(&variations).Error; err != nil {
 		return variations, errors.New("failed to get variations list")
 	}
-	fmt.Println("get variationslist")
 	return variations, nil
 }
 
 func (p *productDatabase) FindCategory(ctx context.Context, category domain.Category) (domain.Category, error) {
-
-	fmt.Println(category.CategoryName)
 	query := `SELECT * FROM categories WHERE category_name = ?`
 	if err := p.DB.Raw(query, category.CategoryName).Scan(&category).Error; err != nil {
 		return category, errors.New("failed to get catogory")
 	}
-	fmt.Println("get catogory")
 	return category, nil
 }
 
@@ -93,16 +88,11 @@ func (p *productDatabase) SaveCategory(ctc context.Context, category domain.Cate
 	return nil
 }
 
-/////////////////////////////////////////////
-
 func (p *productDatabase) FindVarient(ctx context.Context, varient domain.Variation) (domain.Variation, error) {
-
-	fmt.Println(varient.Name)
 	query := `SELECT * FROM variations WHERE name = ?`
 	if err := p.DB.Raw(query, varient.Name).Scan(&varient).Error; err != nil {
 		return varient, errors.New("failed to get varient")
 	}
-	fmt.Println("get varient")
 	return varient, nil
 }
 
@@ -117,16 +107,11 @@ func (p *productDatabase) SaveVarient(ctc context.Context, varient domain.Variat
 	return nil
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 func (p *productDatabase) FindProduct(ctx context.Context, product domain.Product) (domain.Product, error) {
-	fmt.Println(product.Code)
 	query := `SELECT * FROM products WHERE code = ? `
 	if err := p.DB.Raw(query, product.Code).Scan(&product).Error; err != nil {
-		fmt.Println("fail to get")
 		return product, errors.New("failed to get product")
 	}
-	fmt.Println("=====get product")
 	return product, nil
 }
 
@@ -155,18 +140,14 @@ func (p *productDatabase) EditProduct(ctx context.Context, product domain.Produc
 	return nil
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
 func (p *productDatabase) AddPrice(ctx context.Context, price domain.Price) (domain.Price, error) {
 	query := `SELECT * FROM prices WHERE product_id = ? AND variation_id = ?`
 	if err := p.DB.Raw(query, price.ProductID, price.VariationID).Scan(&price).Error; err != nil {
 		return price, errors.New("failed to get product price")
 	}
-	fmt.Println("get product")
 	return price, nil
 }
 func (p *productDatabase) SaveProductPrice(ctc context.Context, price domain.Price) error {
-	fmt.Println("getin saveprdctprice")
 	query := `INSERT INTO prices (product_id,variation_id,actual_price,discount_price,created_at) 
 			  VALUES ($1,$2,$3,$4,$5)`
 	createdAt := time.Now()
@@ -223,7 +204,6 @@ func (p *productDatabase) GetOrderStatus(ctx context.Context) ([]domain.OrderSta
 	if err := p.DB.Raw(query).Scan(&status).Error; err != nil {
 		return status, errors.New("failed to get order status")
 	}
-	fmt.Println("get order status")
 	return status, nil
 }
 
@@ -234,7 +214,6 @@ func (p *productDatabase) FindOrderStatus(ctx context.Context, status domain.Ord
 	if err := p.DB.Raw(query, status.Status).Scan(&dbstatus).Error; err != nil {
 		return dbstatus, errors.New("failed to get status")
 	}
-	fmt.Println("get catogory")
 	return dbstatus, nil
 }
 
@@ -255,7 +234,6 @@ func (p *productDatabase) GetProduct(ctx context.Context, Id uint) (response.Pro
 	FROM products
 	LEFT JOIN categories ON products.category_id=categories.id
 	WHERE Products.id =? `
-	fmt.Println("db", Id)
 
 	if err := p.DB.Raw(query, Id).Scan(&product).Error; err != nil {
 		return product, errors.New("faild to show products")
@@ -293,6 +271,5 @@ func (p *productDatabase) GetProductsByCategoryName(ctc context.Context, CID uin
 			return Products, errors.New("faild to show products")
 		}
 	}
-
 	return Products, nil
 }

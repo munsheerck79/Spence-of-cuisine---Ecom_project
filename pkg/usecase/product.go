@@ -35,7 +35,6 @@ func (p *ProductUsecase) Getvariations(ctx context.Context) ([]domain.Variation,
 	if err != nil {
 		return variationList, err
 	}
-
 	return variationList, nil
 }
 
@@ -43,12 +42,10 @@ func (p *ProductUsecase) AddCategory(ctx context.Context, category domain.Catego
 
 	DBProduct, err := p.productRepository.FindCategory(ctx, category)
 	if err != nil {
-		fmt.Println("qwerttyui")
 		return err
 	}
 
 	if DBProduct.ID == 0 {
-
 		err = p.productRepository.SaveCategory(ctx, category)
 		if err != nil {
 			return err
@@ -61,7 +58,6 @@ func (p *ProductUsecase) AddCategory(ctx context.Context, category domain.Catego
 	return nil
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func (p *ProductUsecase) AddVarient(ctx context.Context, varient domain.Variation) error {
 
 	DBVarient, err := p.productRepository.FindVarient(ctx, varient)
@@ -74,7 +70,6 @@ func (p *ProductUsecase) AddVarient(ctx context.Context, varient domain.Variatio
 		if err != nil {
 			return err
 		}
-
 	} else {
 		return fmt.Errorf("%v varient already exists", DBVarient.Name)
 	}
@@ -82,8 +77,6 @@ func (p *ProductUsecase) AddVarient(ctx context.Context, varient domain.Variatio
 	return nil
 
 }
-
-/////////////////////////////////////////////////////////////////////////////////
 
 func (p *ProductUsecase) AddProduct(ctx context.Context, product domain.Product) error {
 
@@ -104,8 +97,6 @@ func (p *ProductUsecase) AddProduct(ctx context.Context, product domain.Product)
 
 	return nil
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func (p *ProductUsecase) EditProduct(ctx context.Context, product domain.Product) error {
 
@@ -144,8 +135,6 @@ func (p *ProductUsecase) EditProduct(ctx context.Context, product domain.Product
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 func (p *ProductUsecase) AddPrice(ctx context.Context, price domain.Price) error {
 
 	DBProductPrice, err := p.productRepository.AddPrice(ctx, price)
@@ -171,16 +160,13 @@ func (p *ProductUsecase) AddPrice(ctx context.Context, price domain.Price) error
 	return nil
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 func (p *ProductUsecase) GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error) {
 
-	DBProduct, err := p.productRepository.GetProductList(ctx,page)
+	DBProduct, err := p.productRepository.GetProductList(ctx, page)
 	if err != nil {
 		return DBProduct, err
 	}
 	return DBProduct, nil
-
 }
 
 func (p *ProductUsecase) GetProductsByCategoryName(ctc context.Context, CID uint) ([]response.ProductDetails, error) {
@@ -190,7 +176,6 @@ func (p *ProductUsecase) GetProductsByCategoryName(ctc context.Context, CID uint
 		return DBProduct, err
 	}
 	return DBProduct, nil
-
 }
 
 func (p *ProductUsecase) GetOrderStatus(ctx context.Context) ([]domain.OrderStatus, error) {
@@ -199,12 +184,10 @@ func (p *ProductUsecase) GetOrderStatus(ctx context.Context) ([]domain.OrderStat
 	if err != nil {
 		return statusList, err
 	}
-
 	return statusList, nil
 }
 
 func (p *ProductUsecase) AddOrderStatus(ctx context.Context, body domain.OrderStatus) error {
-
 	orderstatus, err := p.productRepository.FindOrderStatus(ctx, body)
 	if err != nil {
 		return err
@@ -218,9 +201,7 @@ func (p *ProductUsecase) AddOrderStatus(ctx context.Context, body domain.OrderSt
 		}
 		return nil
 	}
-
 	return fmt.Errorf("%v status already exists", orderstatus.Status)
-
 }
 
 func (p *ProductUsecase) GetProduct(ctx context.Context, Id uint) (response.ProductDetails, error) {
@@ -229,6 +210,5 @@ func (p *ProductUsecase) GetProduct(ctx context.Context, Id uint) (response.Prod
 	if err != nil {
 		return product, err
 	}
-
 	return product, nil
 }

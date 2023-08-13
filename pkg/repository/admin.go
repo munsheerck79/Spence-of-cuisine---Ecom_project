@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/munsheerck79/Ecom_project.git/pkg/domain"
 	interfaces "github.com/munsheerck79/Ecom_project.git/pkg/repository/interfaces"
@@ -27,10 +26,6 @@ func (i *adminDatabase) FindAdmin(ctx context.Context, admin domain.Admin) (doma
 	if err := i.DB.Raw(query, admin.ID, admin.Email, admin.Phone, admin.UserName).Scan(&admin).Error; err != nil {
 		return admin, errors.New("failed to get user")
 	}
-
-	fmt.Println("get user")
-
-	fmt.Println("from DB", admin)
 	return admin, nil
 }
 
@@ -107,14 +102,6 @@ func (u *adminDatabase) GetOrderlist(ctx context.Context, page request.ReqPagina
 }
 
 func (a *adminDatabase) GenerateSalesReport(c context.Context, dateRange request.DateRange) (salesData []response.SalesReport, err error) {
-
-	// query := `SELECT orders.id AS Order_ID,users.user_name,users.first_name AS name,order.Actual_price As total_amound,orders.discount_price AS discount,
-	// orders.net_amount,coupon.coupon_code,order_statuses.name AS order_status,orders.payment,orders.order_date
-	// FROM orders
-	// LEFT JOIN users ON users.Id = orders.users_id
-	// LEFT JOIN coupons ON coupon.Id = orders.coupon_ID
-	// LEFT JOIN order_statuses ON order_statuses.id = orders.order_status_id
-	// WHERE orders.order_date BETWEEN $1 AND $2 `
 
 	query := `SELECT
     orders.id,

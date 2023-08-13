@@ -18,5 +18,4 @@ type AdminService interface {
 	CancelOrder(ctx context.Context, body request.CancelOrder) (string, error)
 	UserDetails(ctx context.Context,body request.UserDetails)(response.UserDetails,error)	
 	SalesReport(c context.Context, daterange request.DateRange) (salesReport []response.SalesReport, err error)
-
 }

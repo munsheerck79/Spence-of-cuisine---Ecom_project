@@ -272,25 +272,19 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	fmt.Println("add", body.Address)
 	userId := auth.GetUserIdFromContext(c)
 	body.UsersID = userId
-	//
 	var address domain.Address
-	// var user domain.Users
 	if err := copier.Copy(&address, body); err != nil {
 		fmt.Println("Copy failed")
 	}
-
 	// Check the user already exist in DB and save user if not
 	if err := u.userService.AddAddress(c, address); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// success response
 	c.JSON(http.StatusOK, gin.H{"success": "Account created successfuly"})
-
 }
 
 // EditAddress godoc
@@ -311,18 +305,14 @@ func (u *UserHandler) EditAddress(c *gin.Context) {
 	}
 	userId := auth.GetUserIdFromContext(c)
 	editData.UsersID = userId
-	fmt.Println(editData.UsersID)
 	var address domain.Address
-	// var user domain.Users
 	if err := copier.Copy(&address, editData); err != nil {
 		fmt.Println("Copy failed")
 	}
-	// Check the user already exist in DB and save user if not
 	if err := u.userService.EditAddress(c, address); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// success response
 	c.JSON(http.StatusOK, gin.H{"success": "Account created successfuly"})
 
@@ -382,14 +372,11 @@ func (u *UserHandler) DeleteFromCart(c *gin.Context) {
 	}
 
 	userId := auth.GetUserIdFromContext(c)
-	fmt.Println(userId)
-	fmt.Println(cartID)
 
 	if err := u.userService.DeleteFromCart(c, uint(cartID), userId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// success response
 	c.JSON(http.StatusOK, gin.H{"success": "delete product from cart successfully"})
 }
@@ -427,7 +414,7 @@ func (u *UserHandler) EditCartProduct(c *gin.Context) {
 		return
 	}
 	// success response
-	c.JSON(http.StatusOK, gin.H{"success": "Add to cart successfuly"})
+	c.JSON(http.StatusOK, gin.H{"success": " edit cart successfuly"})
 }
 
 // AddToWishList godoc
@@ -465,7 +452,7 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 		return
 	}
 	// success response
-	c.JSON(http.StatusOK, gin.H{"success": "Add to eishlist successfuly"})
+	c.JSON(http.StatusOK, gin.H{"success": "Add to wishlist successfuly"})
 }
 
 // DeleteFromWishLIst godoc
@@ -483,7 +470,6 @@ func (u *UserHandler) AddToWishList(c *gin.Context) {
 func (u *UserHandler) DeleteFromWishLIst(c *gin.Context) {
 	cartID := c.Query("WishlistID")
 	Id, _ := strconv.Atoi(cartID)
-	fmt.Println("wishlistid", cartID)
 	userId := auth.GetUserIdFromContext(c)
 
 	if err := u.userService.DeleteFromWishLIst(c, uint(Id), userId); err != nil {
@@ -511,7 +497,6 @@ func (u *UserHandler) ListWishList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// success response
 	response := gin.H{
 		"":     "get wishlist sucsessfully",
@@ -563,31 +548,3 @@ func (u *UserHandler) OrderHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
-
-// GetWallet godoc
-// @summary api for get wallet
-// @security ApiKeyAuth
-// @id GetWallet
-// @tags User
-// @Router /user/wallet [get]
-// @Success 200 {object} domain.Wallet{}
-// @Failure 400 "Failed to get wallet"
-// func (u *UserHandler) GetWallet(c *gin.Context) {
-
-// 	userId := auth.GetUserIdFromContext(c)
-
-// 	wallet, err := u.userService.GetWallet(c, userId)
-// //
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// success response
-// 	response := gin.H{
-// 		"":     "get address sucsessfully",
-// 		"data": wallet,
-// 	}
-// 	c.JSON(http.StatusOK, response)
-
-// }

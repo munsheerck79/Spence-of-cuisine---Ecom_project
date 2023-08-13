@@ -38,16 +38,8 @@ func NewPaymentHandler(paymentServ interfacess.PaymentService, orderServ interfa
 func (r *PaymentHandler) RazorPayCheckout(c *gin.Context) {
 
 	userId := auth.GetUserIdFromContext(c)
-	fmt.Println("============000", userId)
 	var body request.Order
-
 	body.CouponCode = c.Query("coupon")
-	// if err := c.ShouldBindJSON(&body); err != nil {
-	// 	response := "invalid input"
-	// 	c.JSON(http.StatusBadRequest, response)
-	// 	return
-	// }
-
 	body.PaymentMethod = "online"
 
 	order, RazorPayKey, err := r.orderService.OrderCartProducts(c, uint(userId), body)
@@ -64,8 +56,6 @@ func (r *PaymentHandler) RazorPayCheckout(c *gin.Context) {
 	})
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 // MakePaymentRazorpay is the handler function for pay using razorpay.
 //
 //	@Summary		Make payment razorpay
@@ -78,34 +68,21 @@ func (r *PaymentHandler) RazorPayCheckout(c *gin.Context) {
 //	@Failure		500	"faild"
 //	@Router			/user/order/payment/addmonytowallet [get]
 func (r *PaymentHandler) RazorPayCheckoutWallet(c *gin.Context) {
-	fmt.Println("qwe")
 	userId := auth.GetUserIdFromContext(c)
 	var Amount float64
 	str := c.Query("Amount")
-	fmt.Println("////", str)
 	Amount, err := strconv.ParseFloat(str, 64)
-	fmt.Println("././", Amount)
 	if err != nil {
-		fmt.Println("112233")
 		// Handle the error if the conversion fails
-		fmt.Println("Error converting string to float:", err)
-		return
-	}
-	//var body request.RazorPayCheckoutWallet
-	// if err := c.ShouldBindJSON(&body); err != nil {
-	// 	response := "invalid input"
-	// 	c.JSON(http.StatusBadRequest, response)
-	// 	return
-	// }
-	RazorPayOrderId, RazorPayKey, err := r.orderService.MakeRazorPayPayment(c, float32(Amount))
-	if err != nil {
-		fmt.Println("112244")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "convertion faild"})
 		return
 	}
 
-	fmt.Println("dadaaasasas")
-	fmt.Println("22ww222", RazorPayKey)
-	fmt.Println("dddwwd", RazorPayOrderId)
+	RazorPayOrderId, RazorPayKey, err := r.orderService.MakeRazorPayPayment(c, float32(Amount))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"err": error.Error(err)})
+		return
+	}
 	var Order response.Order
 	Order.UsersID = userId
 	Order.OrderStatus = "wallet"
@@ -116,11 +93,9 @@ func (r *PaymentHandler) RazorPayCheckoutWallet(c *gin.Context) {
 
 	err2 := r.paymentService.AddTempData(c, Order)
 	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"err": error.Error(err2)})
 		return
 	}
-	fmt.Println("22222", RazorPayKey)
-	fmt.Println("html", RazorPayOrderId)
-
 	c.HTML(200, "Razorpay.html", gin.H{
 		"userId":            userId,
 		"razorpay_order_id": RazorPayOrderId,
@@ -128,8 +103,6 @@ func (r *PaymentHandler) RazorPayCheckoutWallet(c *gin.Context) {
 		"razor_pay_key":     RazorPayKey,
 	})
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 // proccessRazorPayOrder godoc
 // @summary api for user pay section
@@ -145,18 +118,16 @@ func (r *PaymentHandler) RazorPayCheckoutWallet(c *gin.Context) {
 //
 // @failiure 404 "not found enything"
 func (r *PaymentHandler) ProccessRazorpayOrder(c *gin.Context) {
-	fmt.Println("post rzr")
 	var data map[string]interface{}
 	if err := json.NewDecoder(c.Request.Body).Decode(&data); err != nil {
-		fmt.Println("errin prc rzr")
 		c.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Now you can access the JSON data as needed using the map keys.
 	// For example:
-	event := data["event"].(string)
-	entity := data["entity"].(string)
+	// event := data["event"].(string)
+	// entity := data["entity"].(string)
 	orderID, orderIDOk := data["payload"].(map[string]interface{})["order"].(map[string]interface{})["entity"].(map[string]interface{})["id"].(string)
 	paymentID, paymentIDOk := data["payload"].(map[string]interface{})["payment"].(map[string]interface{})["entity"].(map[string]interface{})["id"].(string)
 
@@ -181,14 +152,13 @@ func (r *PaymentHandler) ProccessRazorpayOrder(c *gin.Context) {
 		fmt.Println("Status field not found or not a string.")
 	}
 
-	fmt.Println("Received event:", event)
-	fmt.Println("Received entity:", entity)
-	fmt.Println("Razorpay data - status:", status)
-	fmt.Println("Razorpay data - order_id:", orderID)
-	fmt.Println("Razorpay data - bank_transaction_id:", paymentID) // Convert float64 to int
+	// fmt.Println("Received event:", event)
+	// fmt.Println("Received entity:", entity)
+	// fmt.Println("Razorpay data - status:", status)
+	// fmt.Println("Razorpay data - order_id:", orderID)
+	// fmt.Println("Razorpay data - bank_transaction_id:", paymentID) // Convert float64 to int
 
 	Data, err1 := r.paymentService.VerifyRazorPayPayment(c, orderID, status)
-	fmt.Println("vrfy in")
 	if err1 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err1.Error()})
 		return

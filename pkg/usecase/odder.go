@@ -63,21 +63,14 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 	}
 	DiscPrice = discprice
 	Total = total
-	fmt.Println(DiscPrice)
-	fmt.Println(Total)
 
 	for i := 0; i < len(productList); i++ {
-		fmt.Println("for")
 		qty := int(productList[i].QtyInStock) - productList[i].Quantity
 		if qty < 0 {
-
 			return Order, "", fmt.Errorf("%v product is not avalable or less stock", productList[i].ProductName)
 		}
 	}
-	fmt.Println("dis", DiscPrice)
 	NetAmount := DiscPrice
-
-	/////couponcode verification==================
 
 	if body.CouponCode != "" {
 		coupon, err := p.orderRepository.GetCouponByCode(c, body.CouponCode)
@@ -104,24 +97,17 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		}
 		body.CouponId = coupon.ID
 	} else {
-		fmt.Println("nil coupon")
 		body.CouponId = 0
 	}
 
 	var NewOrderID uint
 	choice := body.PaymentMethod
 	// Switch statement
-
 	switch choice {
 	case "online":
-
 		fmt.Println("online payment")
-		///razorpay immplimentation====================
-		fmt.Println(NetAmount)
-
 		RazorPayOrderId, RazorPayKey, err := MakeRazorPayPaymentId(int(NetAmount * 100))
 		if err != nil {
-			fmt.Println("444444444")
 			return Order, "", err
 		}
 		Order.PaymentMethod = "online"
@@ -129,7 +115,6 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		Order.NetAmount = NetAmount
 		Order.UsersID = userId
 		Order.OrderStatus = "product"
-
 		xstatus := "Product"
 		orderIdx, err := p.orderRepository.OrderProductsTemp(c, userId, body, NetAmount, Total, DiscPrice, xstatus, RazorPayOrderId)
 		if err != nil {
@@ -150,7 +135,6 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		if err != nil {
 			return Order, "", err
 		}
-
 		var b request.Order
 		b.CouponId = TempOrder.CouponID
 		b.PaymentMethod = "online"
@@ -184,8 +168,6 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		NewOrderID = orderId
 	case "Wallet":
 		fmt.Println("wallet selected")
-		//vallet implimentation======================
-
 		wallet, err := p.userRepository.GetWalletx(c, userId)
 		if err != nil {
 			return Order, "", err
@@ -193,7 +175,6 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 		if wallet.Balence < NetAmount {
 			return Order, "", fmt.Errorf("insufficent balence")
 		} else {
-
 			body.RazorPayPaymentId = "Wallet"
 			order, orderId, err := p.orderRepository.OrderCartProducts(c, userId, body, NetAmount, Total, DiscPrice)
 			Order = order
@@ -366,7 +347,7 @@ func (o *OrderUsecase) ReturnOrder(c context.Context, userId uint, orderID uint)
 	today := time.Now().UTC()
 	// Check if the new date is before today
 	if newDate.Before(today) {
-		fmt.Println("return requst date is before today:", newDate.Format("2006-01-02"))
+		//fmt.Println("return requst date is before today:", newDate.Format("2006-01-02"))
 		return order, fmt.Errorf("return facility is not avleble ,time out")
 	}
 
@@ -393,24 +374,6 @@ func (o *OrderUsecase) ReturnOrder(c context.Context, userId uint, orderID uint)
 	return order1, nil
 }
 
-// DBProduct, err := p.orderRepository.CheckStock(ctx, order)
-// if err != nil {
-// 	return err
-// }
-// fmt.Println(DBProduct.QtyInStock)
-// fmt.Println(order.Qty)
-// if DBProduct.QtyInStock >= order.Qty {
-
-// 	err = p.orderRepository.PlaceOrder(ctx, order, DBProduct)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// } else {
-// 	return fmt.Errorf("%v product is not avalable or less stock", DBProduct.Name)
-// }
-
-// return nil
 func (p *OrderUsecase) MakeRazorPayPayment(c context.Context, amount float32) (string, string, error) {
 	RazorPayOrder, RazorPayKey, err := MakeRazorPayPaymentId(int(amount * 100))
 	if err != nil {
@@ -420,7 +383,6 @@ func (p *OrderUsecase) MakeRazorPayPayment(c context.Context, amount float32) (s
 }
 
 func MakeRazorPayPaymentId(amount int) (string, string, error) {
-	fmt.Println("55555")
 	razorPayKey := config.GetConfig().RAZORPAYKEY
 	razorPaySecret := config.GetConfig().RAZORPAYSECRET
 
@@ -442,30 +404,14 @@ func MakeRazorPayPaymentId(amount int) (string, string, error) {
 	return RazorpayOrderId, RazorPayKey, nil
 }
 
-// func (o *OrderUsecase) ListCartord(ctx context.Context, userId uint) ([]response.Cart, float32, float32, error) {
-
-// 	TotalPrice := float32(0)
-// 	TotalDiscPrice := float32(0)
-// 	cartList, err := o.orderRepository.CartListord(ctx, userId)
-// 	for i := 0; i < len(cartList); i++ {
-// 		TotalPrice += cartList[i].ActualPrice * float32(cartList[i].Quantity)
-// 		TotalDiscPrice += cartList[i].DiscountPrice * float32(cartList[i].Quantity)
-// 	}
-// 	if err != nil {
-// 		return []response.Cart{}, TotalPrice, TotalDiscPrice, err
-// 	}
-// 	return cartList, TotalPrice, TotalDiscPrice, nil
-
-// }
-
 func (o *OrderUsecase) CreateInvoice(c context.Context, userId uint, orderID uint) ([]byte, error) {
-	println("creatinvoice", orderID)
+
 	orderData, err1 := o.orderRepository.OrderDetails(c, userId, orderID)
 	if err1 != nil {
-		println("creatinvoiceerr")
+
 		return nil, err1
 	}
-	println("amount=", int(orderData.NetAmount))
+
 	if orderData.ID == 0 {
 		return nil, err1
 	}
@@ -473,7 +419,7 @@ func (o *OrderUsecase) CreateInvoice(c context.Context, userId uint, orderID uin
 	if err2 != nil {
 		return nil, err2
 	}
-	println("address", DBAddress.Address)
+
 	if DBAddress.ID == 0 {
 		return nil, err2
 	}
@@ -540,7 +486,6 @@ func (p *OrderUsecase) GetOrderDetails(c context.Context, userId uint, orderID u
 	if productList == nil {
 		return response.Orders1{}, err
 	}
-
 	if err := copier.Copy(&orderDetails, orderData); err != nil {
 		fmt.Println("Copy failed")
 	}
@@ -548,6 +493,5 @@ func (p *OrderUsecase) GetOrderDetails(c context.Context, userId uint, orderID u
 		fmt.Println("Copy failed")
 	}
 	orderDetails.OrderStatusName = orderData.OrderStatus
-
 	return orderDetails, nil
 }

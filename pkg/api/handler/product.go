@@ -21,13 +21,7 @@ func NewProductHandler(productUsecase interfacess.ProductService) *ProductHandle
 	return &ProductHandler{productService: productUsecase}
 }
 
-//================================================================================================================================
-
-func (p *ProductHandler) ListAll(c *gin.Context) {
-
-}
-
-///===============================================================================================================
+//=======================================================================================================================
 
 // ProductList godoc
 // @Summary API for admin or user to list all products
@@ -130,8 +124,6 @@ func (p *ProductHandler) ProductListAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////
 
 // GetCategory godoc
 // @summary API for get category list
@@ -353,7 +345,7 @@ func (p *ProductHandler) EditProduct(c *gin.Context) {
 	}
 
 	// success response
-	c.JSON(http.StatusOK, gin.H{"success": "product added successfuly"})
+	c.JSON(http.StatusOK, gin.H{"success": "product edited successfuly"})
 
 }
 
@@ -424,8 +416,6 @@ func (p *ProductHandler) EditPrice(c *gin.Context) {
 
 }
 
-/////////================================================
-
 // GetOrderStatus godoc
 // @summary API for get order status list
 // @description get order status list for admin
@@ -453,8 +443,6 @@ func (p *ProductHandler) GetOrderStatus(c *gin.Context) {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // AddOrderStatas godoc
 // @summary api for admin to add status
 // @security ApiKeyAuth
@@ -480,33 +468,9 @@ func (p *ProductHandler) AddOrderStatus(c *gin.Context) {
 	}
 
 	// success response
-	c.JSON(http.StatusOK, gin.H{"success": "order status created successfuly"})
+	c.JSON(http.StatusOK, gin.H{"success": "order status created successfully"})
 
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// userList, err := a.adminService.GetUserlist(c)
-// if err != nil {
-// 	respone := "failed to get all users"
-// 	c.JSON(http.StatusInternalServerError, respone)
-// 	return
-// }
-
-// // check there is no user
-// if len(userList) == 0 {
-// 	response := "No user to show"
-// 	c.JSON(http.StatusOK, response)
-// 	return
-// }
-
-// data := gin.H{
-// 	"Message": "List user successful",
-// 	"Data":    userList,
-// }
-
-// c.JSON(http.StatusOK, data)
-
-// }
 
 // GetProduct godoc
 // @Summary Get a product by ID
@@ -549,7 +513,6 @@ func (p *ProductHandler) GetProduct(c *gin.Context) {
 // @Failure 400 {string} string "can't get product"
 func (p *ProductHandler) GetProductAdmin(c *gin.Context) {
 	ID, _ := strconv.Atoi(c.Query("ID"))
-	fmt.Println("Product ID:", ID)
 	product, err := p.productService.GetProduct(c, uint(ID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -23,12 +23,10 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
 func (i *userDatabase) FindUser(ctx context.Context, user domain.Users) (domain.Users, error) {
 	// Check any of the user details matching with db user list
-	fmt.Println(user.FirstName)
 	query := `SELECT * FROM users WHERE id = ? OR email = ? OR user_name = ?`
 	if err := i.DB.Raw(query, user.ID, user.Email, user.UserName).Scan(&user).Error; err != nil {
 		return user, errors.New("failed to get user")
 	}
-	fmt.Println("get user")
 	return user, nil
 }
 
@@ -52,17 +50,13 @@ func (i *userDatabase) FindAddress(ctx context.Context, id uint) (domain.Address
 	if err := i.DB.Raw(query, id).Scan(&address).Error; err != nil {
 		return domain.Address{}, errors.New("failed to get address")
 	}
-	fmt.Println("get address", address)
 	return address, nil
-
 }
 
 func (i *userDatabase) SaveAddress(ctx context.Context, address domain.Address) error {
 	query := `INSERT INTO addresses (users_id, address, muncipality, land_mark, district, state, phone_number,pin_code,created_at) 
 			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	createdAt := time.Now()
-	fmt.Println("add", address.Address)
-	fmt.Println("usr", address.UsersID)
 	err := i.DB.Exec(query, address.UsersID, address.Address, address.Muncipality, address.LandMark,
 		address.District, address.State, address.PhoneNumber, address.PinCode, createdAt).Error
 	if err != nil {
@@ -86,14 +80,6 @@ func (i *userDatabase) UpdateAddress(ctx context.Context, address domain.Address
 	return nil
 }
 func (i *userDatabase) AddToCart(ctx context.Context, item request.Cart) error {
-	// var ex request.Cart
-	// query1 := `SELECT product_id,users_id, FROM carts WHERE users_id = ? AND  product_id = ? AND variation_id = ? ;`
-	// if err := i.DB.Raw(query1, item.UsersID, item.ProductID, item.VariationID).Scan(&ex).Error; err != nil {
-	// 	return errors.New("failed at in searching existing data")
-	// }
-	// if ex.UsersID != 0 && ex.ProductID != 0 {
-	// 	return errors.New("product is allredy at in cart")
-	// }
 
 	query := `INSERT INTO carts (users_id, product_id, variation_id,quantity,created_at) 
 	VALUES ($1, $2, $3, $4,$5)`
@@ -126,7 +112,6 @@ func (i *userDatabase) AddToWishList(ctx context.Context, item domain.WishList) 
 	return nil
 }
 func (i *userDatabase) DeleteFromWishLIst(c context.Context, Id uint, userId uint) error {
-	fmt.Println("enter repo")
 	query := `DELETE FROM wish_lists WHERE users_id = ? AND id = ?`
 	err := i.DB.Exec(query, userId, Id).Error
 	if err != nil {
@@ -148,24 +133,10 @@ func (i *userDatabase) CartList(ctx context.Context, userId uint) ([]response.Ca
 	if err := i.DB.Raw(query, userId).Scan(&Cartlist).Error; err != nil {
 		return Cartlist, errors.New("failed to get user")
 	}
-
 	return Cartlist, nil
-
 }
 func (i *userDatabase) ListWishList(ctx context.Context, userId uint) ([]response.ProductDetails, error) {
 	var W []response.ProductDetails
-	// query := `SELECT wish_lists.id AS ID,products.code,products.name AS product_name,products.discription,categotyies.category_name,variations.name AS variation_name,
-	// products.qty_in_stock,products.stock_status,prices.actual_price,prices.discount_price,products.image
-	// FROM wish_lists
-	// INNER JOIN products ON wish_lists.product_id = products.id
-	// RIGHT JOIN prices ON variations.id = prices.variation_id
-	// INNER JOIN prices ON variations.id = prices.variation_id
-
-	// WHERE wish_lists.users_id = ?`
-	// if err := i.DB.Raw(query, userId).Scan(&wishlist).Error; err != nil {
-	// 	return wishlist, errors.New("failed to get user")
-	// }
-	// return wishlist, nil
 
 	query := `SELECT products.id AS id,products.code,products.name AS product_name,products.description,products.qty_in_stock,products.image,category_Name
 	FROM products 
@@ -201,7 +172,6 @@ func (i *userDatabase) OrderHistory(ctx context.Context, userId uint, page reque
 		return orderHistory, errors.New("failed to get history")
 	}
 	return orderHistory, nil
-
 }
 
 func (i *userDatabase) GetWalletx(ctx context.Context, userId uint) (domain.Wallet, error) {
@@ -211,7 +181,6 @@ func (i *userDatabase) GetWalletx(ctx context.Context, userId uint) (domain.Wall
 		return wallet, errors.New("failed to get wallet")
 	}
 	return wallet, nil
-
 }
 
 func (i *userDatabase) EditCartProduct(ctx context.Context, item domain.Cart) error {

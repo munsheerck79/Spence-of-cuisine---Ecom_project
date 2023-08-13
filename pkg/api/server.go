@@ -13,16 +13,13 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, productHandler *handler.ProductHandler, orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler,
+func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, productHandler *handler.ProductHandler,
+	orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler,
 ) *ServerHTTP {
 
 	engine := gin.New()
 
 	engine.LoadHTMLGlob("templates/*.html") //  loading html for razorpay payment
-
-	// to load views
-	// Serve static files
-	// engine.Static("/assets", "./views/static/assets")
 
 	// Add the Gin Logger middleware.
 	engine.Use(gin.Logger())
@@ -39,14 +36,11 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 	apiuser.POST("/signup", userHandler.UserSignup)
 	apiuser.GET("/home", userHandler.UserHome)
 	apiuser.POST("/login", userHandler.UserLogin)
-	// OTP verfication
-	apiuser.POST("/otp-verify", userHandler.UserOTPVerify)
+	apiuser.POST("/otp-verify", userHandler.UserOTPVerify) // OTP verfication
 
 	apiuser.Use(middleware.UserAuthentication)
 
 	{
-
-		//productdashbord := apiuser.Group("/product")
 		apiuser.GET("/login", userHandler.UserHome)
 		apiuser.GET("/logout", userHandler.LogoutUser)
 		apiuser.GET("/addaddress", userHandler.GetAddress)
@@ -61,7 +55,6 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			userproductdashbord.GET("/listproductbyid", productHandler.GetProduct)
 			userproductdashbord.GET("/listproductsbycatogory", productHandler.GetProductsByCategoryName)
 			userproductdashbord.GET("/category", productHandler.GetCategory)
-
 		}
 
 		usercartdashbord := apiuser.Group("/cart")
@@ -76,7 +69,6 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			userwishlistdashbord.GET("/show", userHandler.ListWishList)
 			userwishlistdashbord.POST("/addtowishlist", userHandler.AddToWishList)
 			userwishlistdashbord.DELETE("/deletefromwishlist/:WishlistID", userHandler.DeleteFromWishLIst)
-
 		}
 
 		apiuser.GET("/coupon", orderHandler.GetCoupon)
@@ -101,21 +93,17 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				//addmoney  to wllet
 				paymentdashbord.GET("/addmonytowallet", paymentHandler.RazorPayCheckoutWallet)
 				//paymentdashbord.POST("/razorpay/process-wallet", paymentHandler.ProccessRazorpayWallet)
-
 			}
-
 		}
-
 	}
+
 	//========================================================== admin side  ===========================================================
 
 	apiadmin := engine.Group("/admin")
 	{
 		//apiadmin.POST("signup", userHandler.UserSignup)//seller
-
 		apiadmin.POST("/login", adminHandler.AdminLogin)
-		// OTP verfication
-		apiadmin.POST("/otp-verify", adminHandler.AdminOTPVerify)
+		apiadmin.POST("/otp-verify", adminHandler.AdminOTPVerify) // OTP verfication
 
 		apiadmin.Use(middleware.AdminAuthentication)
 		{
@@ -129,7 +117,6 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				userdashbord.GET("/", adminHandler.ListUsers)
 				userdashbord.PATCH("/blockuser", adminHandler.BlockUser)
 				userdashbord.GET("/userdetails", adminHandler.UserDetails)
-
 			}
 
 			productdashbord := apiadmin.Group("/product")
@@ -150,7 +137,6 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				productdashbord.POST("/addvariation", productHandler.AddVarient)
 				productdashbord.GET("/orderstatus", productHandler.GetOrderStatus)
 				productdashbord.POST("/addorderstatus", productHandler.AddOrderStatus)
-
 			}
 
 			orderdashbord := apiadmin.Group("/order")

@@ -22,6 +22,8 @@ func NewOrderHandler(orderUsecase interfacess.OrderService, userSer interfacess.
 	return &OrderHandler{orderService: orderUsecase, userService: userSer}
 }
 
+//====================================================== check and confirm all details ===================================================
+
 // BuyProduct godoc
 // @summary API for checking all details for buying cart products
 // @security ApiKeyAuth
@@ -73,6 +75,8 @@ type CheckoutResponse struct {
 	Cart    domain.Cart    `json:"cart"`
 }
 
+//====================================================== order cart products ===================================================
+
 // OrderCartProducts godoc
 // @summary API for order cart products
 // @description place order
@@ -91,11 +95,6 @@ func (p *OrderHandler) OrderCartProducts(c *gin.Context) {
 
 	body.CouponCode = c.Query("coupon")
 	body.PaymentMethod = c.Query("payMethod")
-	// if err := c.ShouldBindJSON(&body); err != nil {
-	// 	response := "invalid input"
-	// 	c.JSON(http.StatusNotAcceptable, response)
-	// 	return
-
 	userId := auth.GetUserIdFromContext(c)
 	order, _, err := p.orderService.OrderCartProducts(c, userId, body)
 	if err != nil {
@@ -110,6 +109,8 @@ func (p *OrderHandler) OrderCartProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+//====================================================== order cart products by cod ===================================================
 
 // OrderCartProductsByCOD godoc
 // @summary API for order cart products using cod
@@ -125,12 +126,7 @@ func (p *OrderHandler) OrderCartProducts(c *gin.Context) {
 func (p *OrderHandler) OrderCartProductsByCOD(c *gin.Context) {
 
 	var body request.Order
-
 	body.CouponCode = c.Query("coupon")
-	// if err := c.ShouldBindJSON(&body); err != nil {
-	// 	response := "invalid input"
-	// 	c.JSON(http.StatusNotAcceptable, response)
-	// 	return
 	body.PaymentMethod = "cod"
 	userId := auth.GetUserIdFromContext(c)
 	order, _, err := p.orderService.OrderCartProducts(c, userId, body)
@@ -146,6 +142,8 @@ func (p *OrderHandler) OrderCartProductsByCOD(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+//====================================================== order cart products by wallet ===================================================
 
 // OrderCartProductsByWallet godoc
 // @summary API for order cart products by using vallet
@@ -164,11 +162,6 @@ func (p *OrderHandler) OrderCartProductsByWallet(c *gin.Context) {
 
 	body.CouponCode = c.Query("coupon")
 	body.PaymentMethod = "Wallet"
-	// if err := c.ShouldBindJSON(&body); err != nil {
-	// 	response := "invalid input"
-	// 	c.JSON(http.StatusNotAcceptable, response)
-	// 	return
-
 	userId := auth.GetUserIdFromContext(c)
 	order, _, err := p.orderService.OrderCartProducts(c, userId, body)
 	if err != nil {
@@ -183,6 +176,46 @@ func (p *OrderHandler) OrderCartProductsByWallet(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+//====================================================== cancel order ===================================================
+
+// CancelOrder godoc
+// @summary API for canceling an order
+// @security ApiKeyAuth
+// @ID CancelOrder
+// @tags User.Order
+// @Param input body request.CancelOrder{} true "inputs"
+// @Router /user/order/cancelorder [delete]
+// @Success 200 "cancel order successful"
+// @Failure 400 "Missing or invalid entry"
+// @Failure 500 "Something went wrong !"
+func (a *AdminHandler) CancelOrder(c *gin.Context) {
+
+	var body request.CancelOrder
+	if err := c.ShouldBindJSON(&body); err != nil {
+		response := "Missing or invalid entry"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	if body.UsersID == 0 {
+		body.UsersID = auth.GetUserIdFromContext(c)
+	}
+
+	msg, err := a.adminService.CancelOrder(c, body)
+
+	if err != nil {
+		respone := "failed cancel"
+		c.JSON(http.StatusInternalServerError, respone)
+		return
+	}
+	data := gin.H{
+		"Message": msg,
+	}
+	c.JSON(http.StatusOK, data)
+
+}
+
+//====================================================== update order status ===================================================
 
 // UpDateOrderStatus godoc
 // @summary api for update order status of a user/order by using id
@@ -217,7 +250,7 @@ func (p *OrderHandler) UpDateOrderStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-///////////////////////////////////////////////////////
+//====================================================== get coupon list ===================================================
 
 // GetCoupon godoc
 // @summary api for get coupons for admin and user
@@ -245,6 +278,8 @@ func (p *OrderHandler) GetCoupon(c *gin.Context) {
 
 }
 
+//====================================================== get coupon list ===================================================
+
 // GetCouponAdmin godoc
 // @summary api for get coupons for admin and user
 // @id GetCouponAdmin
@@ -271,7 +306,7 @@ func (p *OrderHandler) GetCouponAdmin(c *gin.Context) {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//====================================================== Add coupons ===================================================
 
 // AddCoupon godoc
 // @summary api for admin to add coupon
@@ -303,6 +338,8 @@ func (p *OrderHandler) AddCoupon(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": "coupon created successfuly"})
 
 }
+
+//====================================================== return order request===================================================
 
 // ReturnOrder godoc
 // @summary api for return order
@@ -343,6 +380,8 @@ func (p *OrderHandler) ReturnOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, Response)
 
 }
+
+//====================================================== edit coupon ===================================================
 
 // EditCoupon godoc
 // @summary API for edit coupon by admin
@@ -419,11 +458,9 @@ func (p *OrderHandler) GetOrderDetails(c *gin.Context) {
 //	@Failure		500		"faild"
 //	@Router	/user/order/invoice/:orderID [get]
 func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
-	fmt.Println("enter in download")
 	str := c.Query("orderID")
 	orderID, err := strconv.Atoi(str)
 	if err != nil {
-		fmt.Println("1 Invalid entry")
 		response := "Invalid entry"
 		c.JSON(http.StatusBadRequest, response)
 		return
@@ -431,12 +468,10 @@ func (p *OrderHandler) DownloadInvoice(c *gin.Context) {
 	userId := auth.GetUserIdFromContext(c)
 	pdfData, err := p.orderService.CreateInvoice(c, userId, uint(orderID))
 	if err != nil {
-		fmt.Println("2")
 		response := "Failed"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
-	fmt.Println("3")
 	// Set the response headers for downloading the file
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", "attachment; filename=invoice.pdf")
@@ -513,8 +548,6 @@ func (p *OrderHandler) ReturnRefund(c *gin.Context) {
 func (p *OrderHandler) OrderShiped(c *gin.Context) {
 
 	str := c.Query("orderID")
-	fmt.Println("orderid=", str)
-
 	orderID, err1 := strconv.Atoi(str)
 	if err1 != nil {
 		response := "Invalid entry"
@@ -522,7 +555,6 @@ func (p *OrderHandler) OrderShiped(c *gin.Context) {
 		return
 	}
 	u := c.Query("userID")
-	fmt.Println("id", u)
 	userID, err2 := strconv.Atoi(u)
 	if err2 != nil {
 		response := "Invalid entry"

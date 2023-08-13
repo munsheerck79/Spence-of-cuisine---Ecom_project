@@ -17,11 +17,8 @@ type ProductService interface {
 	AddPrice(ctx context.Context, price domain.Price) error
 	GetProductList(ctx context.Context, page request.ReqPagination) ([]response.ProductDetails, error)
 	GetProductsByCategoryName(ctc context.Context, CID uint) ([]response.ProductDetails, error)
-
 	EditProduct(ctx context.Context, product domain.Product) error
-
 	GetOrderStatus(ctx context.Context) ([]domain.OrderStatus, error)
 	AddOrderStatus(ctx context.Context, body domain.OrderStatus) error
 	GetProduct(ctx context.Context, Id uint) (response.ProductDetails, error)
-	//========-------======--=============---------GetProductList(ctx context.Context) (productList []domain.Users, err error)
 }

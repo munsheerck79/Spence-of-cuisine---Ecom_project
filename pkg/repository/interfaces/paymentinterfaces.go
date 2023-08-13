@@ -8,9 +8,8 @@ import (
 
 type PaymentRepository interface {
 	AddMonyToWallet(ctx context.Context, userId uint, RazorPayPaymentId string, money float32) error
-	
 	FindTempData(ctx context.Context, RazorPayKey string) (response.Order, error)
-	//DeleteRazorData(c context.Context, order_id string) error
 	GetWallet(c context.Context,userid uint)(response.WalletRes,error)
 	AddPaymentId(paymentID string,RazorPayOrderId string)error
 }
+//DeleteRazorData(c context.Context, order_id string) error

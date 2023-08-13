@@ -22,6 +22,5 @@ type UserRepository interface {
 	DeleteFromCart(c context.Context, cartId uint, userId uint) error
 	DeleteFromWishLIst(c context.Context, Id uint, userId uint) error
 	GetWalletx(ctx context.Context, userId uint) (domain.Wallet, error)
-	EditCartProduct(ctx context.Context, item domain.Cart) error
-	
+	EditCartProduct(ctx context.Context, item domain.Cart) error	
 }

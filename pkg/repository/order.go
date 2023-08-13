@@ -30,7 +30,6 @@ func (p *orderDatabase) OrderCartProducts(c context.Context, userId uint, body r
 
 	result := p.DB.Raw(query, userId, body.PaymentMethod, body.CouponId, total, discPrice, NetAmount, orderAt, body.RazorPayPaymentId).Scan(&orderId)
 	if result.Error != nil {
-		fmt.Println("enter in err rwsult")
 		return order, orderId, fmt.Errorf("failed to order products: %v", result.Error)
 	}
 
@@ -40,7 +39,6 @@ func (p *orderDatabase) OrderCartProducts(c context.Context, userId uint, body r
 	if err := p.DB.Raw(query2, orderId).Scan(&order).Error; err != nil {
 		return order, orderId, fmt.Errorf("failed to show order products ")
 	}
-	fmt.Println("order success===")
 	return order, orderId, nil
 }
 
@@ -53,17 +51,8 @@ func (p *orderDatabase) OrderProductsTemp(c context.Context, userId uint, body r
 
 	result := p.DB.Raw(query, userId, body.PaymentMethod, body.CouponId, total, discPrice, NetAmount, orderAt, body.RazorPayPaymentId, RazorPayorderId, status).Scan(&orderId)
 	if result.Error != nil {
-		fmt.Println("enter in err rwsult")
 		return orderId, fmt.Errorf("failed to order products: %v", result.Error)
 	}
-
-	// fmt.Println("enter in err 1111")
-	// query2 := `SELECT id,users_id,actual_price,discount_price,net_amount,order_status_id,payment_method,order_date,payment_id
-	//  FROM orders_temp WHERE id = ?`
-	// if err := p.DB.Raw(query2, orderId).Scan(&order).Error; err != nil {
-	// 	return order, orderId, fmt.Errorf("failed to show order products ")
-	// }
-	// fmt.Println("order success===")
 	return orderId, nil
 }
 func (p *orderDatabase) AddItemsToOrderItemsTemp(c context.Context, productList response.Cart, NewOrderID uint) error {
@@ -129,9 +118,7 @@ func (p *orderDatabase) GetOrderItemsById(orderId uint) ([]response.Cart, error)
 	if err := p.DB.Raw(query, orderId).Scan(&Orderlist).Error; err != nil {
 		return Orderlist, errors.New("failed to get user")
 	}
-
 	return Orderlist, nil
-
 }
 
 func (p *orderDatabase) OrderDetails(c context.Context, userId uint, ID uint) (response.Order, error) {
@@ -146,7 +133,6 @@ func (p *orderDatabase) OrderDetails(c context.Context, userId uint, ID uint) (r
 	if err := p.DB.Raw(query2, ID).Scan(&orderDetails).Error; err != nil {
 		return orderDetails, fmt.Errorf("failed to show order products ")
 	}
-	fmt.Println("order success")
 	return orderDetails, nil
 }
 
@@ -155,7 +141,6 @@ func (p *orderDatabase) GetOrderStatusId(c context.Context, body request.UpDateO
 	if err := p.DB.Raw(query2, body.Status).Scan(&body.OrderStatusID).Error; err != nil {
 		return body, fmt.Errorf("failed to get order status id ")
 	}
-	fmt.Println("id get")
 	return body, nil
 }
 func (p *orderDatabase) UpDateOrderStatus(c context.Context, orderstatus request.UpDateOrderStatus) error {
@@ -211,65 +196,3 @@ func (p *orderDatabase) EditCoupon(c context.Context, body request.EditCoupon) e
 	}
 	return nil
 }
-
-// func (o orderDatabase) CartListord(ctx context.Context, userId uint) ([]response.Cart, error) {
-// 	var Cartlist []response.Cart
-// 	query := `SELECT orders_items.id,products.Id AS product_id,products.name AS product_name,variations.name AS variation_name,prices.actual_price,prices.discount_price,orders_items.quantity,products.qty_in_stock
-// 	FROM orders_items
-// 	INNER JOIN products ON orders_items.product_id = products.id
-// 	INNER JOIN variations ON orders_items.variation_id = variations.id
-// 	INNER JOIN prices ON orders_items.product_id = prices.product_id AND orders_items.variation_id = prices.variation_id
-// 	WHERE orders_items.users_id = ?;`
-
-// 	if err := o.DB.Raw(query, userId).Scan(&Cartlist).Error; err != nil {
-// 		return Cartlist, errors.New("failed to get user")
-// 	}
-
-// 	return Cartlist, nil
-
-// }
-
-// func (p *orderDatabase)FindOrder(c context.Context,userId uint,orderID uint)(domain.Orders,error){
-// 	var order domain.Orders
-// 	query := `SELECT * FROM orders WHERE Id = ? OR user_id = ?`
-// 	if err := p.DB.Raw(query,orderID,userId).Scan(&order).Error; err != nil {
-// 		return order, fmt.Errorf("failed get order ")
-// 	}
-// 	return order, nil
-
-// }
-
-// func (p *orderDatabase) CheckStock(ctx context.Context, order domain.Orders) (domain.Product, error) {
-// 	var product domain.Product
-// 	fmt.Println(order.ProductID)
-// 	query := `SELECT * FROM products WHERE id = ?`
-// 	if err := p.DB.Raw(query, order.ProductID).Scan(&product).Error; err != nil {
-// 		return product, errors.New("failed to get product")
-// 	}
-// 	fmt.Println("get product")
-// 	return product, nil
-// }
-
-// func (p *orderDatabase) PlaceOrder(ctx context.Context, order domain.Orders, product domain.Product) error {
-
-// 	query := `INSERT INTO orders (users_id,product_id,variation_id,qty)
-// 				  VALUES ($1,$2,$3,$4)`
-// 	err := p.DB.Exec(query, order.UsersID, order.ProductID, order.VariationID, order.Qty).Error
-// 	if err != nil {
-// 		return fmt.Errorf("failed to order product %s", order.Product.Name)
-// 	}
-
-// 	query2 := `UPDATE products SET qty_in_stock = $1, updated_at = $2 WHERE id = $3`
-
-// 	updatedAt := time.Now()
-
-// 	fmt.Println("old stock = ", product.QtyInStock)
-// 	fmt.Println("order ==", order.Qty)
-// 	stock := product.QtyInStock - order.Qty
-// 	fmt.Println("current stock", stock)
-// 	if p.DB.Exec(query2, stock, updatedAt, order.ProductID).Error != nil {
-// 		return errors.New("failed to update product qty")
-// 	}
-
-// 	return nil
-// }

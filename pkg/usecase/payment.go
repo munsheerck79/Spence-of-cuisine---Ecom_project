@@ -29,7 +29,6 @@ func (p *PaymentUsecase) AddMonyToWallet(ctx context.Context, userId uint, Razor
 		return err
 	}
 	return nil
-
 }
 
 func (p *PaymentUsecase) VerifyRazorPayPayment(c context.Context, razorpayOrderId string, status string) (response.Order, error) {
@@ -43,7 +42,6 @@ func (p *PaymentUsecase) VerifyRazorPayPayment(c context.Context, razorpayOrderI
 	if razorpayOrderId != Data.RazorPayOrderId {
 		return Data, err
 	}
-	fmt.Println("status use", Data)
 	return Data, nil
 }
 
@@ -60,42 +58,6 @@ func (p *PaymentUsecase) AddTempData(c context.Context, data response.Order) err
 	fmt.Println(orderIdx)
 	return nil
 }
-
-// func VerifyRazorPayPayment1(signature, orderId, paymentId string) error {
-// 	// Get razor pay api config
-// 	fmt.Println("96655449")
-
-// 	razorPayKey := config.GetConfig().RAZORPAYKEY
-// 	razorPaySecret := config.GetConfig().RAZORPAYSECRET
-
-// 	// Verify signature
-// 	data := orderId + "|" + paymentId
-// 	h := hmac.New(sha256.New, []byte(razorPaySecret))
-// 	_, err := h.Write([]byte(data))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	sha := hex.EncodeToString(h.Sum(nil))
-// 	if subtle.ConstantTimeCompare([]byte(sha), []byte(signature)) != 1 {
-// 		return err
-// 	}
-// 	// verify payment
-// 	razorpayClient := razorpay.NewClient(razorPayKey, razorPaySecret)
-
-// 	// fetch payment and verify
-// 	payment, err := razorpayClient.Payment.Fetch(paymentId, nil, nil)
-// 	if err != nil {
-// 		return err
-// 	}
-////////////////////////////////////////////////////////////////////////////////////
-//////amount chekkingggg
-
-// 	// check payment status
-// 	if payment["status"] != "captured" {
-// 		return fmt.Errorf("failed to verify payment \n razor pay payment with payment_id %v", paymentId)
-// 	}
-// 	return nil
-// }
 
 func (p *PaymentUsecase) GetWallet(c context.Context, userid uint) (response.WalletRes, error) {
 

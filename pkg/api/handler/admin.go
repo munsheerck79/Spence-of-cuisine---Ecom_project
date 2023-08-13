@@ -36,7 +36,6 @@ func NewAdminHandler(adminUsecase interfacess.AdminService) *AdminHandler {
 // @Failure 400 "Missing or invalid entry"
 // @Failure 500 "Something went wrong !"
 func (u *AdminHandler) AdminHome(c *gin.Context) {
-
 	response := "Welcome to admin side !"
 	c.JSON(http.StatusOK, response)
 }
@@ -75,7 +74,6 @@ func (u *AdminHandler) AdminLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
 	response := gin.H{"Successfuly send OTP to registered mobile number": dbAdmin.ID}
 	c.JSON(http.StatusOK, response)
 }
@@ -125,7 +123,6 @@ func (u *AdminHandler) AdminOTPVerify(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
 	// Verify otp
 	err = auth.TwilioVerifyOTP("+91"+usr.Phone, body.OTP)
 	if err != nil {
@@ -195,7 +192,6 @@ func (a *AdminHandler) ListUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, data)
-
 }
 
 //==============================================================  block user =======================================================
@@ -237,6 +233,8 @@ func (a *AdminHandler) BlockUser(c *gin.Context) {
 
 }
 
+//==================================================== get user details ===================================================
+
 // UserDetails godoc
 // @summary api for get user details for admin
 // @security ApiKeyAuth
@@ -252,7 +250,6 @@ func (a *AdminHandler) UserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
 	userDetails, err := a.adminService.UserDetails(c, body)
 	if err != nil {
 		return
@@ -262,6 +259,8 @@ func (a *AdminHandler) UserDetails(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, data)
 }
+
+//====================================================== list order details ===================================================
 
 // ListOrder godoc
 // @summary api for get order list
@@ -294,26 +293,24 @@ func (a *AdminHandler) ListOrder(c *gin.Context) {
 
 	orderList, err := a.adminService.GetOrderlist(c, page)
 	if err != nil {
-		respone := "failed to get all users"
+		respone := "failed to get order list"
 		c.JSON(http.StatusInternalServerError, respone)
 		return
 	}
 
-	// check there is no user
+	// check there is have order or not
 	if len(orderList) == 0 {
-		response := "No user to show"
+		response := "No order to show"
 		c.JSON(http.StatusOK, response)
 		return
 	}
-
 	data := gin.H{
 		"Message": "List order successful",
 		"Data":    orderList,
 	}
-
 	c.JSON(http.StatusOK, data)
-
 }
+//====================================================== get order details using id ===================================================
 
 //	  GetOrderDetailsAdmin godoc
 //		@Summary		order details get by id
@@ -345,7 +342,6 @@ func (p *OrderHandler) GetOrderDetailsAdmin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// success response
 	responce := gin.H{
 		"success": "get details successfuly",
@@ -354,6 +350,7 @@ func (p *OrderHandler) GetOrderDetailsAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, responce)
 
 }
+//====================================================== cancel order ===================================================
 
 // CancelOrderAdmin godoc
 // @summary API for canceling an order
@@ -380,43 +377,7 @@ func (a *AdminHandler) CancelOrderAdmin(c *gin.Context) {
 	msg, err := a.adminService.CancelOrder(c, body)
 
 	if err != nil {
-		respone := "failed cancel"
-		c.JSON(http.StatusInternalServerError, respone)
-		return
-	}
-	data := gin.H{
-		"Message": msg,
-	}
-	c.JSON(http.StatusOK, data)
-
-}
-
-// CancelOrder godoc
-// @summary API for canceling an order
-// @security ApiKeyAuth
-// @ID CancelOrder
-// @tags User.Order
-// @Param input body request.CancelOrder{} true "inputs"
-// @Router /user/order/cancelorder [delete]
-// @Success 200 "cancel order successful"
-// @Failure 400 "Missing or invalid entry"
-// @Failure 500 "Something went wrong !"
-func (a *AdminHandler) CancelOrder(c *gin.Context) {
-
-	var body request.CancelOrder
-	if err := c.ShouldBindJSON(&body); err != nil {
-		response := "Missing or invalid entry"
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-	if body.UsersID == 0 {
-		body.UsersID = auth.GetUserIdFromContext(c)
-	}
-
-	msg, err := a.adminService.CancelOrder(c, body)
-
-	if err != nil {
-		respone := "failed cancel"
+		respone := "failed to cancel"
 		c.JSON(http.StatusInternalServerError, respone)
 		return
 	}
@@ -439,14 +400,9 @@ func (a *AdminHandler) CancelOrder(c *gin.Context) {
 // @Failure 400 "Missing or Invalid inputs"
 func (a *AdminHandler) SalesReport(c *gin.Context) {
 	var body request.DateRange
-	fmt.Println("entered in sales func")
-	// 	if err := c.ShouldBindJSON(&body); err != nil {
-	// 		response := "Missing or invalid entry"
-	// 		c.JSON(http.StatusBadRequest, response)
-	// 		return
-	// 	}
 	end := c.Query("end_date")
 	start := c.Query("start_date")
+	// concert strin to time.Time format
 	layout := "2006-01-02 15:04:05"
 	endTime, err := time.Parse(layout, end)
 	if err != nil {

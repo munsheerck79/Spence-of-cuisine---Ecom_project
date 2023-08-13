@@ -23,30 +23,20 @@ func NewAdminService(repo interfaces.AdminRepository) interfacess.AdminService {
 
 func (u *AdminUsecase) LoginAdmin(ctx context.Context, admin domain.Admin) (domain.Admin, error) {
 	// Find user in db
-	fmt.Println(admin.Email)
-
 	DBAdmin, err := u.adminRepository.FindAdmin(ctx, admin)
-	fmt.Println("dbadmin",)
-
 	if err != nil {
-		fmt.Println("err@find admin",err)
 		return admin, err
 	} else if DBAdmin.ID == 0 {
 		return admin, errors.New("user not exist")
 	}
-	fmt.Println(DBAdmin.Phone)
-	if _, err := auth.TwilioSendOTP("+91" + DBAdmin.Phone); err != nil {
-		fmt.Println("error @send otp")
-		return admin, fmt.Errorf("failed to send otp %v", err)
-	}
 	// check password with hashed pass
 	if DBAdmin.Password != admin.Password {
-		fmt.Println("error @check password")
 		return admin, errors.New("password incorrect")
 	}
-	fmt.Println("return to handler")
+	if _, err := auth.TwilioSendOTP("+91" + DBAdmin.Phone); err != nil {
+		return admin, fmt.Errorf("failed to send otp %v", err)
+	}
 	return DBAdmin, nil
-
 }
 
 func (u *AdminUsecase) OTPLogin(ctx context.Context, admin domain.Admin) (domain.Admin, error) {
@@ -55,7 +45,7 @@ func (u *AdminUsecase) OTPLogin(ctx context.Context, admin domain.Admin) (domain
 	if err != nil {
 		return admin, err
 	} else if DBAdmin.ID == 0 {
-		return admin, errors.New("user not exist")
+		return admin, errors.New("admin not exist")
 	}
 	return DBAdmin, nil
 }
@@ -66,7 +56,6 @@ func (a *AdminUsecase) GetUserlist(ctx context.Context, page request.ReqPaginati
 	if err != nil {
 		return GetUser, err
 	}
-
 	return GetUser, nil
 }
 func (a *AdminUsecase) BlockUser(ctx context.Context, body request.BlockUser) (string, error) {
