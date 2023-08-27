@@ -14,11 +14,6 @@ type OrderRepository interface {
 	GetOrderStatusId(c context.Context, body request.UpDateOrderStatus) (request.UpDateOrderStatus, error)
 	UpDateOrderStatus(c context.Context, orderStatus request.UpDateOrderStatus) error
 
-	GetCoupon(c context.Context) ([]domain.Coupon, error)
-	AddCoupon(c context.Context, body domain.Coupon) error
-	EditCoupon(c context.Context, body request.EditCoupon) error
-
-	GetCouponByCode(c context.Context, code string) (domain.Coupon, error)
 	AddItemsToOrderItems(c context.Context, productList response.Cart, NewOrderID uint) error
 	GetOrderItemsById(orderId uint) ([]response.Cart, error)
 	

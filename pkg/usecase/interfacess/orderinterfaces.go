@@ -12,9 +12,7 @@ type OrderService interface {
 	BuyProduct(c context.Context, userId uint) (domain.Address, error)
 	OrderCartProducts(c context.Context, userId uint, body request.Order) (response.Order, string, error)
 	UpDateOrderStatus(c context.Context, body request.UpDateOrderStatus) error
-	GetCoupon(c context.Context) ([]domain.Coupon, error)
-	AddCoupon(c context.Context, body domain.Coupon) error
-	EditCoupon(c context.Context, body request.EditCoupon) error
+
 	MakeRazorPayPayment(c context.Context, amount float32) (string, string, error)
 	ReturnOrder(c context.Context, userId uint, orderID uint) (response.Order, error)
 	CreateInvoice(c context.Context, userId uint, orderID uint) ([]byte, error)

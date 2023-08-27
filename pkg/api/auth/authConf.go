@@ -13,7 +13,7 @@ import (
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 )
 
-// ========================== JWT Token and cookie session  ========================== //
+// ========================== JWT Token  ========================== //
 
 func JwtCookieSetup(c *gin.Context, name string, userId uint) bool {
 	//time = 10 hr

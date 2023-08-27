@@ -14,7 +14,7 @@ type ServerHTTP struct {
 }
 
 func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, productHandler *handler.ProductHandler,
-	orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler,
+	orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler, couponHandler *handler.CouponHandler,
 ) *ServerHTTP {
 
 	engine := gin.New()
@@ -71,7 +71,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			userwishlistdashbord.DELETE("/deletefromwishlist/:WishlistID", userHandler.DeleteFromWishLIst)
 		}
 
-		apiuser.GET("/coupon", orderHandler.GetCoupon)
+		apiuser.GET("/coupon", couponHandler.GetCoupon)
 
 		userorderdashbord := apiuser.Group("/order")
 		{
@@ -144,9 +144,9 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 				orderdashbord.GET("/", adminHandler.ListOrder)
 				orderdashbord.GET("/orderdetailsbyid", orderHandler.GetOrderDetailsAdmin)
 				orderdashbord.DELETE("/cancelorder", adminHandler.CancelOrderAdmin)
-				orderdashbord.GET("/coupons", orderHandler.GetCouponAdmin)
-				orderdashbord.POST("/addcoupon", orderHandler.AddCoupon)
-				orderdashbord.PUT("/editcoupon", orderHandler.EditCoupon)
+				orderdashbord.GET("/coupons", couponHandler.GetCouponAdmin)
+				orderdashbord.POST("/addcoupon", couponHandler.AddCoupon)
+				orderdashbord.PUT("/editcoupon", couponHandler.EditCoupon)
 				orderdashbord.PATCH("/updateorderstatus", orderHandler.UpDateOrderStatus)
 				orderUpdateDashbord := orderdashbord.Group("/updateorderstatus")
 				{

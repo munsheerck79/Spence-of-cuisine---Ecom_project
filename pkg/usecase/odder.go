@@ -19,6 +19,7 @@ import (
 
 type OrderUsecase struct {
 	orderRepository   interfaces.OrderRepository
+	couponRepository  interfaces.CouponRepository
 	productRepository interfaces.ProductRepository
 	userRepository    interfaces.UserRepository
 	paymentRepository interfaces.PaymentRepository
@@ -73,7 +74,7 @@ func (p *OrderUsecase) OrderCartProducts(c context.Context, userId uint, body re
 	NetAmount := DiscPrice
 
 	if body.CouponCode != "" {
-		coupon, err := p.orderRepository.GetCouponByCode(c, body.CouponCode)
+		coupon, err := p.couponRepository.GetCouponByCode(c, body.CouponCode)
 		if err != nil {
 			return Order, "", fmt.Errorf("%v coupon is not avalable", body.CouponCode)
 		}
@@ -278,57 +279,6 @@ func (p *OrderUsecase) UpDateOrderStatus(ctx context.Context, body request.UpDat
 		}
 	}
 	return nil
-}
-
-func (p *OrderUsecase) GetCoupon(c context.Context) ([]domain.Coupon, error) {
-
-	coupons, err := p.orderRepository.GetCoupon(c)
-	if err != nil {
-		return coupons, err
-	}
-	return coupons, nil
-
-}
-func (p *OrderUsecase) AddCoupon(c context.Context, body domain.Coupon) error {
-	err := p.orderRepository.AddCoupon(c, body)
-	if err != nil {
-		return err
-	}
-	return nil
-
-}
-func (p *OrderUsecase) EditCoupon(c context.Context, body request.EditCoupon) error {
-
-	coupon, err := p.orderRepository.GetCouponByCode(c, body.Code)
-	if err != nil {
-		return fmt.Errorf("%v coupon is not avalable err", body.Code)
-	}
-	if coupon.ID == 0 {
-		return fmt.Errorf("%v coupon is not avalable", body.Code)
-	}
-	if body.Description == "" {
-		body.Description = coupon.Description
-	}
-	if body.DiscountMaxAmount == 0 {
-		body.DiscountMaxAmount = coupon.DiscountMaxAmount
-	}
-	if body.DiscountPercent == 0 {
-		body.DiscountPercent = coupon.DiscountPercent
-	}
-	if body.MinOrderValue == 0 {
-		body.MinOrderValue = coupon.MinOrderValue
-	}
-	if body.ValidTill == 0 {
-		body.ValidTill = coupon.ValidTill
-	} else {
-		body.ValidTill = body.ValidTill * (time.Now().Add(24 * time.Hour).Unix())
-	}
-	err1 := p.orderRepository.EditCoupon(c, body)
-	if err1 != nil {
-		return err1
-	}
-	return nil
-
 }
 
 func (o *OrderUsecase) ReturnOrder(c context.Context, userId uint, orderID uint) (response.Order, error) {

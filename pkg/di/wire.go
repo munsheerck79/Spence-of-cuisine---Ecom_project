@@ -36,6 +36,10 @@ func InitiateAPI(cfg config.Config) (*http.ServerHTTP, error) {
 		usecase.NewPaymentService,
 		handler.NewPaymentHandler,
 
+		repository.NewCouponRepository,
+		usecase.NewCouponService,
+		handler.NewCouponHandler,
+
 		http.NewServerHTTP,
 	)
 
