@@ -45,7 +45,7 @@ func (p *couponDatabase) AddCoupon(c context.Context, body domain.Coupon) error 
 
 	err := p.DB.Exec(query, body.Code, body.Description, body.MinOrderValue, body.DiscountPercent, body.DiscountMaxAmount, validAt).Error
 	if err != nil {
-		return fmt.Errorf("failed to order products ")
+		return fmt.Errorf("failed to add coupon ")
 	}
 	return nil
 }
